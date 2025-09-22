@@ -9,6 +9,8 @@
     <!-- KaTeX for rendering math formulas -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0KOVEMutoExTqlSFyLCT0ueC6cGI4MQTyWsTGKUj+nKzSQwNHcdnK" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -114,19 +116,67 @@
         .chevron { transition: transform 0.3s ease-in-out; }
         .info-box.open .info-content { padding: 0 1rem 1rem 1rem; }
         .info-box.open .chevron { transform: rotate(180deg); }
+        
+        /* Tooltip for export button */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="transition-colors duration-300">
     <div class="max-w-screen-2xl mx-auto p-4 md:p-8">
-        <header class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl md:text-3xl font-bold">DC FinOps Cost Calculator</h1>
-            <div class="relative">
-                <select id="theme-selector" class="p-2 rounded-md border-theme border bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-theme-accent appearance-none">
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                    <option value="openshift">Openshift</option>
-                    <option value="saas">Modern SaaS</option>
-                </select>
+        <header class="flex justify-between items-center mb-8 gap-4">
+            <h1 class="text-2xl md:text-3xl font-bold">Advanced Cloud Cost Calculator</h1>
+            <div class="flex items-center gap-4">
+                <!-- CURRENCY SELECTOR -->
+                <div class="relative">
+                    <select id="currency-selector" class="p-2 rounded-md border-theme border bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-theme-accent appearance-none">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="INR">INR (₹)</option>
+                        <option value="GBP">GBP (£)</option>
+                    </select>
+                </div>
+                <!-- THEME SELECTOR -->
+                <div class="relative">
+                    <select id="theme-selector" class="p-2 rounded-md border-theme border bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-theme-accent appearance-none">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="openshift">Openshift</option>
+                        <option value="saas">Modern SaaS</option>
+                    </select>
+                </div>
             </div>
         </header>
 
@@ -137,11 +187,8 @@
                 <input type="radio" id="modelStandard" name="financialModel" value="standard" onchange="switchModel()" class="hidden">
                 <label for="modelStandard" class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Standard Utilization</label>
                 
-                <input type="radio" id="modelDynamic" name="financialModel" value="dynamic" onchange="switchModel()" class="hidden">
-                <label for="modelDynamic" class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Dynamic Rate (PaaS)</label>
-                
                 <input type="radio" id="modelVCI" name="financialModel" value="vci" onchange="switchModel()" class="hidden">
-                <label for="modelVCI" class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">VCI Model (Equal Share)</label>
+                <label for="modelVCI" class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Equal Share Model</label>
 
                 <input type="radio" id="modelHybrid" name="financialModel" value="hybrid" onchange="switchModel()" class="hidden">
                 <label for="modelHybrid" class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Tiered Hybrid</label>
@@ -149,7 +196,7 @@
             <!-- Model Information Box -->
             <div id="model-info-container" class="mt-6">
                 <div id="info-standard" class="model-info info-box border-l-4 rounded-r-lg">
-                    <div class="info-header flex justify-between items-center cursor-pointer" onclick="toggleInfoBox('info-standard')">
+                    <div class="info-header flex justify-between items-center cursor-pointer p-4" onclick="toggleInfoBox('info-standard')">
                         <h3 class="font-bold text-lg">Model Information: Standard Utilization</h3>
                         <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
@@ -175,29 +222,9 @@
                         </ul>
                     </div>
                 </div>
-                <div id="info-dynamic" class="model-info info-box border-l-4 rounded-r-lg" style="display: none;">
-                    <div class="info-header flex justify-between items-center cursor-pointer" onclick="toggleInfoBox('info-dynamic')">
-                         <h3 class="font-bold text-lg">Model Information: Dynamic Rate</h3>
-                         <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
-                    <div class="info-content">
-                        <p class="mt-2">This model protects the provider from losses due to low utilization. It calculates the price based on an **Effective Utilization Rate**, which is the **lower** of the Target Rate or the Actual Rate. If real-world demand is low, the per-hour price automatically increases to ensure costs are always covered. This is common in PaaS or managed service offerings.</p>
-                        <h4 class="font-semibold mt-4">Formulas & Logic:</h4>
-                        <p>1. Determine Effective Utilization (<span class="symbol">U<sub>effective</sub></span>): The model uses the minimum value between the planned target and the actual measured utilization.</p>
-                        <span class="formula" id="formula-dyn-1"></span>
-                        <p>2. Calculate Final Price (<span class="symbol">P<sub>unit</sub></span>): The formula is similar to the standard model but uses the <span class="symbol">U<sub>effective</sub></span>. This means if <span class="symbol">U<sub>actual</sub></span> is low, the denominator gets smaller, increasing the final price.</p>
-                        <span class="formula" id="formula-dyn-2"></span>
-                        <h4 class="font-semibold mt-4">Legend:</h4>
-                        <ul>
-                            <li><span class="symbol">U<sub>target</sub></span>: Target Utilization Rate</li>
-                            <li><span class="symbol">U<sub>actual</sub></span>: Actual Utilization Rate</li>
-                            <li>* All other symbols are the same as the Standard Model.</li>
-                        </ul>
-                    </div>
-                </div>
                 <div id="info-vci" class="model-info info-box border-l-4 rounded-r-lg" style="display: none;">
-                    <div class="info-header flex justify-between items-center cursor-pointer" onclick="toggleInfoBox('info-vci')">
-                        <h3 class="font-bold text-lg">Model Information: VCI (Equal Share)</h3>
+                    <div class="info-header flex justify-between items-center cursor-pointer p-4" onclick="toggleInfoBox('info-vci')">
+                        <h3 class="font-bold text-lg">Model Information: Equal Share</h3>
                         <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                     <div class="info-content">
@@ -214,7 +241,7 @@
                     </div>
                 </div>
                  <div id="info-hybrid" class="model-info info-box border-l-4 rounded-r-lg" style="display: none;">
-                    <div class="info-header flex justify-between items-center cursor-pointer" onclick="toggleInfoBox('info-hybrid')">
+                    <div class="info-header flex justify-between items-center cursor-pointer p-4" onclick="toggleInfoBox('info-hybrid')">
                         <h3 class="font-bold text-lg">Model Information: Tiered Hybrid</h3>
                         <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
@@ -245,7 +272,7 @@
 
                 <!-- Section 1: Core Inputs -->
                 <div class="card p-6 rounded-xl shadow-md">
-                    <h2 class="section-title">Section 1: Core Inputs</h2>
+                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 1: Core Inputs</h2>
                     <div class="table-container">
                         <table class="w-full">
                             <thead class="card-alt">
@@ -258,53 +285,48 @@
                             <tbody class="divide-y border-theme">
                                 <tr>
                                     <td class="p-3">Amortization Period (Years) <span class="symbol">(A<sub>y</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="amortizationYears" class="input-cell w-full" value="3" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">Hardware lifespan</td>
+                                    <td class="p-3"><input type="number" id="amortizationYears" class="input-cell w-full p-2 rounded-md" value="3" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">Hardware lifespan</td>
                                 </tr>
-                                <tr class="model-input standard dynamic">
+                                <tr class="model-input standard">
                                     <td class="p-3">Target Utilization Rate (%) <span class="symbol">(U<sub>target</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="utilizationRate" class="input-cell w-full" value="65" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">The ideal usage rate for pricing</td>
-                                </tr>
-                                <tr class="model-input dynamic" style="display: none;">
-                                    <td class="p-3">Actual Utilization Rate (%) <span class="symbol">(U<sub>actual</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="actualUtilizationRate" class="input-cell w-full" value="50" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">Real-world usage (for dynamic model)</td>
+                                    <td class="p-3"><input type="number" id="utilizationRate" class="input-cell w-full p-2 rounded-md" value="65" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">The ideal usage rate for pricing</td>
                                 </tr>
                                 <tr class="model-input vci hybrid" style="display: none;">
                                     <td class="p-3">Number of Projects / Tenants <span class="symbol">(N<sub>projects</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="numProjects" class="input-cell w-full" value="50" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">Total tenants sharing the cost</td>
+                                    <td class="p-3"><input type="number" id="numProjects" class="input-cell w-full p-2 rounded-md" value="50" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">Total tenants sharing the cost</td>
                                 </tr>
                                  <tr class="model-input hybrid" style="display: none;">
                                     <td class="p-3">Base Cost Split (%) <span class="symbol">(B<sub>split</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="baseCostSplit" class="input-cell w-full" value="80" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">% of total cost covered by base fees</td>
+                                    <td class="p-3"><input type="number" id="baseCostSplit" class="input-cell w-full p-2 rounded-md" value="80" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">% of total cost covered by base fees</td>
                                 </tr>
                                 <tr class="model-input hybrid" style="display: none;">
                                     <td class="p-3">Overage Utilization Target (%) <span class="symbol">(U<sub>overage</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="overageUtilization" class="input-cell w-full" value="40" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">Lower utilization implies higher overage rate</td>
+                                    <td class="p-3"><input type="number" id="overageUtilization" class="input-cell w-full p-2 rounded-md" value="40" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">Lower utilization implies higher overage rate</td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">Profit Margin (%) <span class="symbol">(M)</span></td>
-                                    <td class="p-3"><input type="number" id="profitMargin" class="input-cell w-full" value="20" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">Profit on top of cost</td>
+                                    <td class="p-3"><input type="number" id="profitMargin" class="input-cell w-full p-2 rounded-md" value="20" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">Profit on top of cost</td>
                                 </tr>
-                                <tr class="model-input standard dynamic hybrid">
+                                <tr class="model-input standard hybrid">
                                     <td class="p-3 font-semibold">Cost Allocation: CPU Weight (%) <span class="symbol">(W<sub>cpu</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="cpuWeight" class="input-cell w-full" value="85" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">Must sum to 100%</td>
+                                    <td class="p-3"><input type="number" id="cpuWeight" class="input-cell w-full p-2 rounded-md" value="85" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">Must sum to 100%</td>
                                 </tr>
-                                <tr class="model-input standard dynamic hybrid">
+                                <tr class="model-input standard hybrid">
                                     <td class="p-3 font-semibold">Cost Allocation: RAM Weight (%) <span class="symbol">(W<sub>ram</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="ramWeight" class="input-cell w-full" value="10" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">Must sum to 100%</td>
+                                    <td class="p-3"><input type="number" id="ramWeight" class="input-cell w-full p-2 rounded-md" value="10" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">Must sum to 100%</td>
                                 </tr>
-                                <tr class="model-input standard dynamic hybrid">
+                                <tr class="model-input standard hybrid">
                                     <td class="p-3 font-semibold">Cost Allocation: Storage Weight (%) <span class="symbol">(W<sub>storage</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="storageWeight" class="input-cell w-full" value="5" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes">Must sum to 100%</td>
+                                    <td class="p-3"><input type="number" id="storageWeight" class="input-cell w-full p-2 rounded-md" value="5" oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">Must sum to 100%</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -313,7 +335,7 @@
 
                 <!-- Section 2: Total Infrastructure Capacity -->
                 <div class="card p-6 rounded-xl shadow-md">
-                    <h2 class="section-title">Section 2: Total Infrastructure Capacity</h2>
+                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 2: Total Infrastructure Capacity</h2>
                     <div class="table-container">
                         <table class="w-full">
                            <thead class="card-alt">
@@ -326,43 +348,43 @@
                             <tbody class="divide-y border-theme">
                                 <tr>
                                     <td class="p-3">Total Physical Servers</td>
-                                    <td class="p-3"><input type="number" id="totalServers" class="input-cell w-full" value="1000" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="totalServers" class="input-cell w-full p-2 rounded-md" value="1000" oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">vCPU per Physical Core Ratio</td>
-                                    <td class="p-3"><input type="number" id="vcpuRatio" class="input-cell w-full" value="2" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="vcpuRatio" class="input-cell w-full p-2 rounded-md" value="2" oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">Physical CPU Cores per Server</td>
-                                    <td class="p-3"><input type="number" id="coresPerServer" class="input-cell w-full" value="64" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="coresPerServer" class="input-cell w-full p-2 rounded-md" value="64" oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">RAM (GB) per Server</td>
-                                    <td class="p-3"><input type="number" id="ramPerServer" class="input-cell w-full" value="512" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="ramPerServer" class="input-cell w-full p-2 rounded-md" value="512" oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">Storage (GB) per Server</td>
-                                    <td class="p-3"><input type="number" id="storagePerServer" class="input-cell w-full" value="4000" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="storagePerServer" class="input-cell w-full p-2 rounded-md" value="4000" oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3 font-semibold">Total vCPU Capacity <span class="symbol">(N<sub>cpu</sub>)</span></td>
                                     <td></td>
-                                    <td id="totalVcpu" class="output-cell"></td>
+                                    <td id="totalVcpu" class="output-cell p-3 font-semibold"></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3 font-semibold">Total RAM (GB) Capacity <span class="symbol">(N<sub>ram</sub>)</span></td>
                                     <td></td>
-                                    <td id="totalRam" class="output-cell"></td>
+                                    <td id="totalRam" class="output-cell p-3 font-semibold"></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3 font-semibold">Total Storage (GB) Capacity <span class="symbol">(N<sub>storage</sub>)</span></td>
                                     <td></td>
-                                    <td id="totalStorage" class="output-cell"></td>
+                                    <td id="totalStorage" class="output-cell p-3 font-semibold"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -371,15 +393,15 @@
 
                 <!-- Section 3: Capital Expenditures (CapEx) -->
                 <div class="card p-6 rounded-xl shadow-md">
-                    <h2 class="section-title">Section 3: Capital Expenditures (CapEx)</h2>
+                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 3: Capital Expenditures (CapEx)</h2>
                      <div class="table-container">
                         <table class="w-full">
                             <thead class="card-alt">
                                 <tr>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Item</th>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Cost per Unit ($)</th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Cost per Unit (<span class="currency-symbol">$</span>)</th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Quantity</th>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Total Cost ($)</th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Total Cost (<span class="currency-symbol">$</span>)</th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
@@ -394,11 +416,11 @@
                                 </tr>
                                 <tr>
                                      <td colspan="5" class="p-2">
-                                        <button class="w-full text-left p-3 border-2 border-dashed border-theme rounded-lg hover:bg-theme-card-bg-alt transition-colors flex items-center gap-2 text-theme-accent" onclick="addCapexRow()">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                            Add New CapEx Item
-                                        </button>
-                                    </td>
+                                         <button class="w-full text-left p-3 border-2 border-dashed border-theme rounded-lg hover:bg-theme-card-bg-alt transition-colors flex items-center gap-2 text-theme-accent" onclick="addCapexRow()">
+                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                             Add New CapEx Item
+                                         </button>
+                                     </td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -407,13 +429,13 @@
 
                 <!-- Section 4: Annual Operational Expenditures (OpEx) -->
                 <div class="card p-6 rounded-xl shadow-md">
-                    <h2 class="section-title">Section 4: Annual Operational Expenditures (OpEx)</h2>
+                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 4: Annual Operational Expenditures (OpEx)</h2>
                     <div class="table-container">
                         <table class="w-full">
                             <thead class="card-alt">
                                 <tr>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Item</th>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Annual Cost ($)</th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Annual Cost (<span class="currency-symbol">$</span>)</th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
@@ -428,11 +450,11 @@
                                 </tr>
                                  <tr>
                                      <td colspan="3" class="p-2">
-                                        <button class="w-full text-left p-3 border-2 border-dashed border-theme rounded-lg hover:bg-theme-card-bg-alt transition-colors flex items-center gap-2 text-theme-accent" onclick="addOpexRow()">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                            Add New OpEx Item
-                                        </button>
-                                    </td>
+                                         <button class="w-full text-left p-3 border-2 border-dashed border-theme rounded-lg hover:bg-theme-card-bg-alt transition-colors flex items-center gap-2 text-theme-accent" onclick="addOpexRow()">
+                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                             Add New OpEx Item
+                                         </button>
+                                     </td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -440,485 +462,552 @@
                 </div>
             </div>
 
-            <!-- Right Column for Calculations -->
-            <div class="lg:col-span-1">
-                <div class="lg:sticky lg:top-8 space-y-8">
-                    <!-- Core Calculations -->
-                    <div class="card p-6 rounded-xl shadow-md">
-                        <h2 class="section-title">Section 5: Core Calculations</h2>
-                        <div class="table-container">
-                            <table class="w-full">
-                                <tbody class="divide-y border-theme">
-                                    <tr>
-                                        <td class="p-3 font-semibold">Annualized CapEx</td>
-                                        <td id="annualizedCapex" class="output-cell p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">Total Annual OpEx</td>
-                                        <td id="annualOpexSummary" class="output-cell p-3"></td>
-                                    </tr>
-                                    <tr class="card-alt">
-                                        <td class="p-3 font-bold">Total Annual Cost <span class="symbol">(C<sub>annual</sub>)</span></td>
-                                        <td id="totalAnnualCost" class="output-cell font-bold p-3"></td>
-                                    </tr>
-                                    <tr class="card-alt brightness-90">
-                                        <td class="p-3 font-bold">Total Hourly Cost <span class="symbol">(C<sub>hourly</sub>)</span></td>
-                                        <td id="totalHourlyCost" class="output-cell font-bold p-3"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+            <!-- Right Column for Results -->
+            <div class="lg:col-span-1 space-y-8">
+                 <div class="sticky top-8 card p-6 rounded-xl shadow-md">
+                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Results & Summary</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm uppercase tracking-wider">Total Annual Cost (Inc. Margin)</p>
+                            <p id="totalAnnualCost" class="text-2xl font-bold success-text">$0.00</p>
                         </div>
+                        <div>
+                            <p class="text-sm uppercase tracking-wider">Total Hourly Cost (Inc. Margin)</p>
+                            <p id="totalHourlyCost" class="text-2xl font-bold success-text">$0.00</p>
+                        </div>
+                        <div id="result-standard" class="result-box space-y-3 pt-3 border-t border-theme">
+                            <p class="font-semibold text-lg">Standard Rate Pricing:</p>
+                             <div class="grid grid-cols-2 gap-x-4">
+                                <div>
+                                    <p class="text-sm uppercase tracking-wider">Price per vCPU/Hour</p>
+                                    <p id="priceCpu" class="text-xl font-bold text-theme-accent">$0.00000</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs uppercase tracking-wider">Break-Even</p>
+                                    <p id="breakEvenPriceCpu" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm uppercase tracking-wider">Price per GB RAM/Hour</p>
+                                    <p id="priceRam" class="text-xl font-bold text-theme-accent">$0.00000</p>
+                                </div>
+                                <div>
+                                     <p class="text-xs uppercase tracking-wider">Break-Even</p>
+                                    <p id="breakEvenPriceRam" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm uppercase tracking-wider">Price per GB Storage/Hour</p>
+                                    <p id="priceStorage" class="text-xl font-bold text-theme-accent">$0.00000</p>
+                                </div>
+                                <div>
+                                     <p class="text-xs uppercase tracking-wider">Break-Even</p>
+                                    <p id="breakEvenPriceStorage" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                </div>
+                             </div>
+                        </div>
+                        <div id="result-vci" class="result-box space-y-3 pt-3 border-t border-theme" style="display: none;">
+                            <p class="font-semibold text-lg">Equal Share Model Pricing:</p>
+                             <div class="grid grid-cols-2 gap-x-4">
+                                <div>
+                                    <p class="text-sm uppercase tracking-wider">Annual Cost per Project</p>
+                                    <p id="vciCost" class="text-xl font-bold text-theme-accent">$0.00</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs uppercase tracking-wider">Break-Even (Cost)</p>
+                                    <p id="breakEvenVciCost" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="result-hybrid" class="result-box space-y-3 pt-3 border-t border-theme" style="display: none;">
+                            <p class="font-semibold text-lg">Hybrid Model Pricing:</p>
+                             <div class="grid grid-cols-2 gap-x-4">
+                                <div>
+                                    <p class="text-sm uppercase tracking-wider">Base Annual Cost / Tenant</p>
+                                    <p id="hybridBaseCost" class="text-xl font-bold text-theme-accent">$0.00</p>
+                                </div>
+                                 <div>
+                                    <p class="text-xs uppercase tracking-wider">Break-Even (Cost)</p>
+                                    <p id="breakEvenHybridBaseCost" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm uppercase tracking-wider">Overage vCPU Rate /Hour</p>
+                                    <p id="hybridCpuOverage" class="text-xl font-bold text-theme-accent">$0.00000</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs uppercase tracking-wider">Break-Even</p>
+                                    <p id="breakEvenHybridCpuOverage" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                </div>
+                                 <div>
+                                    <p class="text-sm uppercase tracking-wider">Overage GB RAM Rate /Hour</p>
+                                    <p id="hybridRamOverage" class="text-xl font-bold text-theme-accent">$0.00000</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs uppercase tracking-wider">Break-Even</p>
+                                    <p id="breakEvenHybridRamOverage" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EXPORT BUTTON with TOOLTIP -->
+                        <div class="pt-4 flex items-center justify-center gap-2">
+                             <button id="exportButton" onclick="exportToExcelWithFormulas()" class="w-full bg-theme-accent text-white font-bold py-3 px-4 rounded-lg bg-theme-accent-hover transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-accent-hover" disabled>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export to Excel
+                             </button>
+                             <div class="tooltip-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                                <span id="export-tooltip" class="tooltip-text">Calculate a model to enable export. The exported file will contain formulas for dynamic calculations.</span>
+                             </div>
+                        </div>
+
                     </div>
-                    <!-- Final Rate Calculation -->
-                    <div class="card p-6 rounded-xl shadow-md">
-                        <h2 class="section-title">Section 6: Final Price Calculation</h2>
-                        <div id="results-standard" class="model-results table-container">
-                             <table class="w-full">
-                                <thead class="card-alt">
-                                    <tr>
-                                        <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Resource</th>
-                                        <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Break-Even Cost ($/hr)</th>
-                                        <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Final Price ($/hr)</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y border-theme">
-                                    <tr>
-                                        <td class="p-3 font-semibold">per vCPU-Hour</td>
-                                        <td id="breakEvenVcpu" class="output-cell p-3"></td>
-                                        <td id="finalPriceVcpu" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">per RAM GB-Hour</td>
-                                        <td id="breakEvenRam" class="output-cell p-3"></td>
-                                        <td id="finalPriceRam" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">per Storage GB-Hour</td>
-                                        <td id="breakEvenStorage" class="output-cell p-3"></td>
-                                        <td id="finalPriceStorage" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="results-dynamic" class="model-results table-container" style="display: none;">
-                             <table class="w-full">
-                                <thead class="card-alt">
-                                    <tr>
-                                        <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Resource</th>
-                                        <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Dynamic Price ($/hr)</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y border-theme">
-                                    <tr>
-                                        <td class="p-3 font-semibold">per vCPU-Hour</td>
-                                        <td id="dynamicPriceVcpu" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">per RAM GB-Hour</td>
-                                        <td id="dynamicPriceRam" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">per Storage GB-Hour</td>
-                                        <td id="dynamicPriceStorage" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="results-vci" class="model-results table-container" style="display: none;">
-                            <table class="w-full">
-                                <tbody class="divide-y border-theme">
-                                    <tr>
-                                        <td class="p-3 font-bold text-xl">Annual Cost Per Project</td>
-                                        <td id="vciCostPerProject" class="output-cell font-bold text-2xl success-text p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">Effective vCPU-Hour Rate</td>
-                                        <td id="vciEffectiveVcpu" class="output-cell p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">Effective RAM GB-Hour Rate</td>
-                                        <td id="vciEffectiveRam" class="output-cell p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">Effective Storage GB-Hour Rate</td>
-                                        <td id="vciEffectiveStorage" class="output-cell p-3"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                         <div id="results-hybrid" class="model-results table-container" style="display: none;">
-                            <table class="w-full">
-                                <thead class="card-alt">
-                                    <tr>
-                                        <th colspan="2" class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Tiered Pricing</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y border-theme">
-                                    <tr>
-                                        <td class="p-3 font-bold text-lg">Monthly Base Cost per Tenant</td>
-                                        <td id="hybridBaseCost" class="output-cell font-bold text-2xl success-text p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="p-3 font-semibold card-alt">Overage Rates (per hour, after allowance)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">per vCPU-Hour</td>
-                                        <td id="hybridOverageVcpu" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">per RAM GB-Hour</td>
-                                        <td id="hybridOverageRam" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold">per Storage GB-Hour</td>
-                                        <td id="hybridOverageStorage" class="output-cell font-bold success-text p-3"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- Helper Functions ---
-        const formatCurrency = (num) => {
-            if (isNaN(num) || !isFinite(num)) return '$0.00';
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
-        };
-        const formatRate = (num) => {
-            if (isNaN(num) || !isFinite(num)) return '$0.000000';
-            return '$' + num.toFixed(6);
-        };
-
-        // --- State Management ---
-        const APP_STATE_KEY = 'cloudCostAppState_v6';
-
-        function saveState() {
-            const inputs = Array.from(document.querySelectorAll('.input-cell'));
-            const capexData = Array.from(document.querySelectorAll('#capex-body tr')).map(row => ({
-                name: row.cells[0].querySelector('input').value,
-                cost: row.cells[1].querySelector('input').value,
-                qty: row.cells[2].querySelector('input').value,
-            }));
-            const opexData = Array.from(document.querySelectorAll('#opex-body tr')).map(row => ({
-                name: row.cells[0].querySelector('input').value,
-                cost: row.cells[1].querySelector('input').value,
-            }));
-
-            const state = {
-                inputs: inputs.map(input => ({ id: input.id, value: input.value })),
-                capex: capexData,
-                opex: opexData,
-                selectedModel: document.querySelector('input[name="financialModel"]:checked').value,
-                infoBoxStates: {
-                    'info-standard': !document.getElementById('info-standard').classList.contains('open'),
-                    'info-dynamic': !document.getElementById('info-dynamic').classList.contains('open'),
-                    'info-vci': !document.getElementById('info-vci').classList.contains('open'),
-                    'info-hybrid': !document.getElementById('info-hybrid').classList.contains('open'),
-                },
-                theme: document.documentElement.className,
-            };
-            localStorage.setItem(APP_STATE_KEY, JSON.stringify(state));
-        }
-
-        function loadState() {
-            const savedState = localStorage.getItem(APP_STATE_KEY);
-            if (!savedState) {
-                // Load default rows if no state
-                addCapexRow('Servers (CPU, RAM, etc.)', 15000, 1000);
-                addCapexRow('Networking Gear', 500000, 10);
-                addCapexRow('Storage Area Network (SAN)', 800000, 4);
-                addOpexRow('Data Center Staff', 3000000);
-                addOpexRow('Network Bandwidth', 1200000);
-                document.getElementById('modelStandard').checked = true;
-                return;
-            }
-
-            const state = JSON.parse(savedState);
-            
-            state.inputs.forEach(item => {
-                const el = document.getElementById(item.id);
-                if (el) el.value = item.value;
-            });
-
-            const capexBody = document.getElementById('capex-body');
-            capexBody.innerHTML = '';
-            state.capex.forEach(item => addCapexRow(item.name, item.cost, item.qty));
-
-            const opexBody = document.getElementById('opex-body');
-            opexBody.innerHTML = '';
-            state.opex.forEach(item => addOpexRow(item.name, item.cost));
-            
-            if (state.selectedModel) {
-                 const radio = document.getElementById(`model${state.selectedModel.charAt(0).toUpperCase() + state.selectedModel.slice(1)}`);
-                 if(radio) radio.checked = true;
-            } else {
-                document.getElementById('modelStandard').checked = true;
-            }
-
-
-            if (state.infoBoxStates) {
-                for (const [id, isClosed] of Object.entries(state.infoBoxStates)) {
-                    const box = document.getElementById(id);
-                    if (box && !isClosed) {
-                       box.classList.add('open');
-                       const content = box.querySelector('.info-content');
-                       setTimeout(() => { if(content) content.style.maxHeight = content.scrollHeight + 'px'; }, 50);
-                    } else if (box) {
-                       box.classList.remove('open');
-                    }
-                }
-            }
-            
-            if (state.theme) {
-                applyTheme(state.theme);
-                document.getElementById('theme-selector').value = state.theme;
-            }
-        }
-
-        // --- Model Switching & Info Box Logic ---
-        function switchModel() {
-            const selectedModelEl = document.querySelector('input[name="financialModel"]:checked');
-            if (!selectedModelEl) return;
-            const selectedModel = selectedModelEl.value;
-
-            document.querySelectorAll('.model-input').forEach(el => el.style.display = 'none');
-            document.querySelectorAll(`.model-input.${selectedModel}`).forEach(el => el.style.display = 'table-row');
-            document.querySelectorAll('.model-results').forEach(el => el.style.display = 'none');
-            document.getElementById(`results-${selectedModel}`).style.display = 'block';
-            document.querySelectorAll('.model-info').forEach(el => el.style.display = 'none');
-            document.getElementById(`info-${selectedModel}`).style.display = 'block';
+        let currentCurrency = 'USD';
+        
+        // --- THEME & CURRENCY SWITCHER LOGIC ---
+        document.getElementById('theme-selector').addEventListener('change', (e) => {
+            document.documentElement.className = e.target.value;
             calculateModel();
-        }
-
-        function toggleInfoBox(id) {
-            const box = document.getElementById(id);
-            const content = box.querySelector('.info-content');
-            box.classList.toggle('open');
-            if (box.classList.contains('open')) {
-                content.style.maxHeight = content.scrollHeight + 'px';
-            } else {
-                content.style.maxHeight = '0px';
-            }
-            setTimeout(saveState, 500);
-        }
-
-        // --- Main Calculation Controller ---
-        function calculateModel() {
-            const selectedModelEl = document.querySelector('input[name="financialModel"]:checked');
-            if (!selectedModelEl) return;
-            const selectedModel = selectedModelEl.value;
-            
-            const amortizationYears = parseFloat(document.getElementById('amortizationYears').value) || 0;
-            const totalServers = parseFloat(document.getElementById('totalServers').value) || 0;
-            const vcpuRatio = parseFloat(document.getElementById('vcpuRatio').value) || 0;
-            const coresPerServer = parseFloat(document.getElementById('coresPerServer').value) || 0;
-            const ramPerServer = parseFloat(document.getElementById('ramPerServer').value) || 0;
-            const storagePerServer = parseFloat(document.getElementById('storagePerServer').value) || 0;
-            const totalVcpu = totalServers * coresPerServer * vcpuRatio;
-            const totalRam = totalServers * ramPerServer;
-            const totalStorage = totalServers * storagePerServer;
-            
-            document.getElementById('totalVcpu').textContent = totalVcpu.toLocaleString();
-            document.getElementById('totalRam').textContent = totalRam.toLocaleString();
-            document.getElementById('totalStorage').textContent = totalStorage.toLocaleString();
-
-            let totalCapex = 0;
-            document.querySelectorAll('#capex-body tr').forEach(row => {
-                const cost = parseFloat(row.querySelector('.capex-cost').value) || 0;
-                const qty = parseFloat(row.querySelector('.capex-qty').value) || 0;
-                const rowTotal = cost * qty;
-                row.querySelector('.capex-total').textContent = formatCurrency(rowTotal);
-                totalCapex += rowTotal;
+        });
+        
+        document.getElementById('currency-selector').addEventListener('change', (e) => {
+            currentCurrency = e.target.value;
+            const symbols = { USD: '$', EUR: '€', INR: '₹', GBP: '£' };
+            document.querySelectorAll('.currency-symbol').forEach(span => {
+                span.innerText = symbols[currentCurrency];
             });
-            document.getElementById('totalCapex').textContent = formatCurrency(totalCapex);
+            calculateModel();
+        });
 
-            let totalOpex = 0;
-            document.querySelectorAll('#opex-body tr').forEach(row => {
-                const cost = parseFloat(row.querySelector('.opex-cost').value) || 0;
-                totalOpex += cost;
-            });
-            document.getElementById('totalOpex').textContent = formatCurrency(totalOpex);
-
-            const annualizedCapex = amortizationYears > 0 ? totalCapex / amortizationYears : 0;
-            const totalAnnualCost = annualizedCapex + totalOpex;
-            const hoursInYear = 365 * 24;
-            const totalHourlyCost = totalAnnualCost / hoursInYear;
-
-            document.getElementById('annualizedCapex').textContent = formatCurrency(annualizedCapex);
-            document.getElementById('annualOpexSummary').textContent = formatCurrency(totalOpex);
-            document.getElementById('totalAnnualCost').textContent = formatCurrency(totalAnnualCost);
-            document.getElementById('totalHourlyCost').textContent = formatCurrency(totalHourlyCost);
-
-            const profitMargin = (parseFloat(document.getElementById('profitMargin').value) || 0) / 100;
-
-            if (selectedModel === 'standard') {
-                calculateStandardModel(totalHourlyCost, totalVcpu, totalRam, totalStorage, profitMargin);
-            } else if (selectedModel === 'dynamic') {
-                calculateDynamicModel(totalHourlyCost, totalVcpu, totalRam, totalStorage, profitMargin);
-            } else if (selectedModel === 'vci') {
-                calculateVCIModel(totalAnnualCost, totalHourlyCost, totalVcpu, totalRam, totalStorage, profitMargin);
-            } else if (selectedModel === 'hybrid') {
-                calculateHybridModel(totalAnnualCost, totalHourlyCost, totalVcpu, totalRam, totalStorage, profitMargin);
-            }
-            saveState();
-        }
-
-        function calculateStandardModel(totalHourlyCost, totalVcpu, totalRam, totalStorage, profitMargin) {
-            const utilizationRate = (parseFloat(document.getElementById('utilizationRate').value) || 0) / 100;
-            const cpuWeight = (parseFloat(document.getElementById('cpuWeight').value) || 0) / 100;
-            const ramWeight = (parseFloat(document.getElementById('ramWeight').value) || 0) / 100;
-            const storageWeight = (parseFloat(document.getElementById('storageWeight').value) || 0) / 100;
-            
-            const breakEvenVcpu = (totalVcpu > 0 && utilizationRate > 0) ? (totalHourlyCost * cpuWeight) / (totalVcpu * utilizationRate) : 0;
-            const breakEvenRam = (totalRam > 0 && utilizationRate > 0) ? (totalHourlyCost * ramWeight) / (totalRam * utilizationRate) : 0;
-            const breakEvenStorage = (totalStorage > 0 && utilizationRate > 0) ? (totalHourlyCost * storageWeight) / (totalStorage * utilizationRate) : 0;
-            
-            document.getElementById('breakEvenVcpu').textContent = formatRate(breakEvenVcpu);
-            document.getElementById('breakEvenRam').textContent = formatRate(breakEvenRam);
-            document.getElementById('breakEvenStorage').textContent = formatRate(breakEvenStorage);
-
-            document.getElementById('finalPriceVcpu').textContent = formatRate(breakEvenVcpu * (1 + profitMargin));
-            document.getElementById('finalPriceRam').textContent = formatRate(breakEvenRam * (1 + profitMargin));
-            document.getElementById('finalPriceStorage').textContent = formatRate(breakEvenStorage * (1 + profitMargin));
-        }
-
-        function calculateDynamicModel(totalHourlyCost, totalVcpu, totalRam, totalStorage, profitMargin) {
-            const targetUtilization = (parseFloat(document.getElementById('utilizationRate').value) || 0) / 100;
-            const actualUtilization = (parseFloat(document.getElementById('actualUtilizationRate').value) || 0) / 100;
-            const cpuWeight = (parseFloat(document.getElementById('cpuWeight').value) || 0) / 100;
-            const ramWeight = (parseFloat(document.getElementById('ramWeight').value) || 0) / 100;
-            const storageWeight = (parseFloat(document.getElementById('storageWeight').value) || 0) / 100;
-
-            const effectiveUtilization = Math.max(0.01, Math.min(targetUtilization, actualUtilization));
-
-            const dynamicBreakEvenVcpu = (totalVcpu > 0 && effectiveUtilization > 0) ? (totalHourlyCost * cpuWeight) / (totalVcpu * effectiveUtilization) : 0;
-            const dynamicBreakEvenRam = (totalRam > 0 && effectiveUtilization > 0) ? (totalHourlyCost * ramWeight) / (totalRam * effectiveUtilization) : 0;
-            const dynamicBreakEvenStorage = (totalStorage > 0 && effectiveUtilization > 0) ? (totalHourlyCost * storageWeight) / (totalStorage * effectiveUtilization) : 0;
-
-            document.getElementById('dynamicPriceVcpu').textContent = formatRate(dynamicBreakEvenVcpu * (1 + profitMargin));
-            document.getElementById('dynamicPriceRam').textContent = formatRate(dynamicBreakEvenRam * (1 + profitMargin));
-            document.getElementById('dynamicPriceStorage').textContent = formatRate(dynamicBreakEvenStorage * (1 + profitMargin));
-        }
-
-        function calculateVCIModel(totalAnnualCost, totalHourlyCost, totalVcpu, totalRam, totalStorage, profitMargin) {
-            const numProjects = parseFloat(document.getElementById('numProjects').value) || 1;
-            const totalCostWithProfit = totalAnnualCost * (1 + profitMargin);
-            const costPerProject = totalCostWithProfit / numProjects;
-            document.getElementById('vciCostPerProject').textContent = formatCurrency(costPerProject);
-            
-            // Calculate effective rates by assuming 100% of cost is covered by 100% of resources
-            const cpuWeight = 0.85; // Using default weights for effective rate calculation
-            const ramWeight = 0.10;
-            const storageWeight = 0.05;
-
-            const hourlyCostWithProfit = totalHourlyCost * (1 + profitMargin);
-            const effectiveVcpu = totalVcpu > 0 ? (hourlyCostWithProfit * cpuWeight) / totalVcpu : 0;
-            const effectiveRam = totalRam > 0 ? (hourlyCostWithProfit * ramWeight) / totalRam : 0;
-            const effectiveStorage = totalStorage > 0 ? (hourlyCostWithProfit * storageWeight) / totalStorage : 0;
-
-            document.getElementById('vciEffectiveVcpu').textContent = formatRate(effectiveVcpu);
-            document.getElementById('vciEffectiveRam').textContent = formatRate(effectiveRam);
-            document.getElementById('vciEffectiveStorage').textContent = formatRate(effectiveStorage);
-        }
-
-        function calculateHybridModel(totalAnnualCost, totalHourlyCost, totalVcpu, totalRam, totalStorage, profitMargin) {
-            const numProjects = parseFloat(document.getElementById('numProjects').value) || 1;
-            const baseSplit = (parseFloat(document.getElementById('baseCostSplit').value) || 0) / 100;
-            const overageUtil = (parseFloat(document.getElementById('overageUtilization').value) || 0) / 100;
-
-            const annualCostWithProfit = totalAnnualCost * (1 + profitMargin);
-            const baseAnnualCost = annualCostWithProfit * baseSplit;
-            const overageAnnualCost = annualCostWithProfit * (1 - baseSplit);
-
-            const baseCostPerTenantMonthly = (baseAnnualCost / numProjects) / 12;
-            document.getElementById('hybridBaseCost').textContent = formatCurrency(baseCostPerTenantMonthly);
-
-            const overageHourlyCost = overageAnnualCost / (365 * 24);
-            const cpuWeight = (parseFloat(document.getElementById('cpuWeight').value) || 0) / 100;
-            const ramWeight = (parseFloat(document.getElementById('ramWeight').value) || 0) / 100;
-            const storageWeight = (parseFloat(document.getElementById('storageWeight').value) || 0) / 100;
-
-            const overageVcpu = (totalVcpu > 0 && overageUtil > 0) ? (overageHourlyCost * cpuWeight) / (totalVcpu * overageUtil) : 0;
-            const overageRam = (totalRam > 0 && overageUtil > 0) ? (overageHourlyCost * ramWeight) / (totalRam * overageUtil) : 0;
-            const overageStorage = (totalStorage > 0 && overageUtil > 0) ? (overageHourlyCost * storageWeight) / (totalStorage * overageUtil) : 0;
-            
-            document.getElementById('hybridOverageVcpu').textContent = formatRate(overageVcpu);
-            document.getElementById('hybridOverageRam').textContent = formatRate(overageRam);
-            document.getElementById('hybridOverageStorage').textContent = formatRate(overageStorage);
-        }
-
-
-        // --- Dynamic Row Functions ---
-        function addCapexRow(name = '', cost = 0, qty = 1) {
+        // --- DYNAMIC ROW LOGIC ---
+        function addCapexRow(item = '', cost = '', qty = '') {
             const tbody = document.getElementById('capex-body');
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td class="p-3"><input type="text" class="input-cell w-full" placeholder="New Item Name" value="${name}"></td>
-                <td class="p-3"><input type="number" class="input-cell w-full capex-cost" value="${cost}" oninput="calculateModel()"></td>
-                <td class="p-3"><input type="number" class="input-cell w-full capex-qty" value="${qty}" oninput="calculateModel()"></td>
-                <td class="capex-total output-cell p-3">$0.00</td>
-                <td class="p-3"><button class="delete-row-btn bg-red-500 hover:bg-red-600 flex items-center justify-center w-8 h-8 rounded-full text-white" onclick="deleteRow(this)">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                </button></td>
+                <td class="p-3"><input type="text" placeholder="e.g., Server Hardware" class="item-input input-cell w-full p-2 rounded-md" value="${item}" oninput="calculateModel()"></td>
+                <td class="p-3"><input type="number" placeholder="0" class="cost-input input-cell w-full p-2 rounded-md" value="${cost}" oninput="calculateModel()"></td>
+                <td class="p-3"><input type="number" placeholder="0" class="qty-input input-cell w-full p-2 rounded-md" value="${qty}" oninput="calculateModel()"></td>
+                <td class="total-cost-cell output-cell p-3 font-semibold"></td>
+                <td class="p-3">
+                    <button class="text-red-500 hover:text-red-700 dark:hover:text-red-400" onclick="removeRow(this)">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </td>
             `;
             tbody.appendChild(newRow);
         }
 
-        function addOpexRow(name = '', cost = 0) {
+        function addOpexRow(item = '', cost = '') {
             const tbody = document.getElementById('opex-body');
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td class="p-3"><input type="text" class="input-cell w-full" placeholder="New Item Name" value="${name}"></td>
-                <td class="p-3"><input type="number" class="input-cell w-full opex-cost" value="${cost}" oninput="calculateModel()"></td>
-                <td class="p-3"><button class="delete-row-btn bg-red-500 hover:bg-red-600 flex items-center justify-center w-8 h-8 rounded-full text-white" onclick="deleteRow(this)">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                </button></td>
+                <td class="p-3"><input type="text" placeholder="e.g., Software Licenses" class="item-input input-cell w-full p-2 rounded-md" value="${item}" oninput="calculateModel()"></td>
+                <td class="p-3"><input type="number" placeholder="0" class="cost-input input-cell w-full p-2 rounded-md" value="${cost}" oninput="calculateModel()"></td>
+                <td class="p-3">
+                    <button class="text-red-500 hover:text-red-700 dark:hover:text-red-400" onclick="removeRow(this)">
+                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </td>
             `;
             tbody.appendChild(newRow);
         }
 
-        function deleteRow(btn) {
-            const row = btn.parentNode.parentNode;
-            row.parentNode.removeChild(row);
+        function removeRow(button) {
+            button.closest('tr').remove();
+            calculateModel();
+        }
+
+        // --- MODEL SWITCHER ---
+        function switchModel() {
+            const selectedModel = document.querySelector('input[name="financialModel"]:checked').value;
+            
+            document.querySelectorAll('.model-input').forEach(el => el.style.display = 'none');
+            document.querySelectorAll(`.model-input.${selectedModel}`).forEach(el => el.style.display = 'table-row');
+            
+            document.querySelectorAll('.model-info').forEach(el => el.style.display = 'none');
+            document.getElementById(`info-${selectedModel}`).style.display = 'block';
+
+            document.querySelectorAll('.result-box').forEach(el => el.style.display = 'none');
+            if (selectedModel === 'standard') {
+                 document.getElementById('result-standard').style.display = 'block';
+            } else if (selectedModel === 'vci') {
+                 document.getElementById('result-vci').style.display = 'block';
+            } else if (selectedModel === 'hybrid') {
+                 document.getElementById('result-hybrid').style.display = 'block';
+            }
+
             calculateModel();
         }
         
-        function renderFormulas() {
-            katex.render("C_{annual} = \\left( \\frac{\\sum C_{CapEx}}{A_y} \\right) + \\sum C_{OpEx}", document.getElementById('formula-std-1'));
-            katex.render("R_{unit} = \\frac{C_{hourly} \\times W_{unit}}{N_{unit} \\times U_{target}}", document.getElementById('formula-std-2'));
-            katex.render("P_{unit} = R_{unit} \\times (1 + M)", document.getElementById('formula-std-3'));
-            
-            katex.render("U_{effective} = \\min(U_{target}, U_{actual})", document.getElementById('formula-dyn-1'));
-            katex.render("P_{unit} = \\left( \\frac{C_{hourly} \\times W_{unit}}{N_{unit} \\times U_{effective}} \\right) \\times (1 + M)", document.getElementById('formula-dyn-2'));
+        // --- INFO BOX TOGGLE ---
+        function toggleInfoBox(id) {
+            const box = document.getElementById(id);
+            if (box) {
+                box.classList.toggle('open');
+                const content = box.querySelector('.info-content');
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            }
+        }
 
-            katex.render("C_{project} = \\frac{C_{annual} \\times (1 + M)}{N_{projects}}", document.getElementById('formula-vci-1'));
-            
-            katex.render("C_{base} = \\frac{C_{annual} \\times B_{split}}{N_{projects}}", document.getElementById('formula-hybrid-1'));
-            katex.render("P_{overage} = \\left( \\frac{C_{hourly} \\times (1 - B_{split})}{N_{unit} \\times U_{overage}} \\right) \\times (1+M)", document.getElementById('formula-hybrid-2'));
+        // --- MAIN CALCULATION LOGIC ---
+        function getVal(id) {
+            return parseFloat(document.getElementById(id).value) || 0;
         }
         
-        // --- Theme Management ---
-        const themeSelector = document.getElementById('theme-selector');
-
-        function applyTheme(theme) {
-             document.documentElement.className = theme;
+        function formatCurrency(value, decimals = 2) {
+             return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: currentCurrency,
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            }).format(value);
         }
 
-        themeSelector.addEventListener('change', (e) => {
-            applyTheme(e.target.value);
-            saveState();
-        });
+        function formatNumber(value) {
+            return new Intl.NumberFormat('en-US').format(value);
+        }
 
-        // Initial setup on page load
-        window.onload = () => {
-            loadState();
-            renderFormulas();
+        function calculateModel() {
+            // Enable Export Button once calculation is run
+            const exportButton = document.getElementById('exportButton');
+            exportButton.disabled = false;
+            document.getElementById('export-tooltip').innerText = "Export the current calculation to an interactive Excel sheet.";
+
+            // --- Section 1 & 2: Get core inputs and calculate capacities ---
+            const amortizationYears = getVal('amortizationYears');
+            const utilizationRate = getVal('utilizationRate') / 100;
+            const profitMargin = getVal('profitMargin') / 100;
+            const cpuWeight = getVal('cpuWeight') / 100;
+            const ramWeight = getVal('ramWeight') / 100;
+            const storageWeight = getVal('storageWeight') / 100;
+            const numProjects = getVal('numProjects');
+            const baseCostSplit = getVal('baseCostSplit') / 100;
+            const overageUtilization = getVal('overageUtilization') / 100;
+
+            const totalServers = getVal('totalServers');
+            const vcpuRatio = getVal('vcpuRatio');
+            const coresPerServer = getVal('coresPerServer');
+            const ramPerServer = getVal('ramPerServer');
+            const storagePerServer = getVal('storagePerServer');
+
+            const totalVcpu = totalServers * coresPerServer * vcpuRatio;
+            const totalRam = totalServers * ramPerServer;
+            const totalStorage = totalServers * storagePerServer;
+
+            document.getElementById('totalVcpu').innerText = formatNumber(totalVcpu);
+            document.getElementById('totalRam').innerText = formatNumber(totalRam);
+            document.getElementById('totalStorage').innerText = formatNumber(totalStorage);
+
+            // --- Section 3: Calculate CapEx ---
+            let totalCapex = 0;
+            document.querySelectorAll('#capex-body tr').forEach(row => {
+                const cost = parseFloat(row.querySelector('.cost-input').value) || 0;
+                const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+                const total = cost * qty;
+                row.querySelector('.total-cost-cell').innerText = formatCurrency(total);
+                totalCapex += total;
+            });
+            document.getElementById('totalCapex').innerText = formatCurrency(totalCapex);
+
+            // --- Section 4: Calculate OpEx ---
+            let totalOpex = 0;
+            document.querySelectorAll('#opex-body tr').forEach(row => {
+                const cost = parseFloat(row.querySelector('.cost-input').value) || 0;
+                totalOpex += cost;
+            });
+            document.getElementById('totalOpex').innerText = formatCurrency(totalOpex);
+
+            // --- Core Financial Calculations ---
+            const amortizedCapex = amortizationYears > 0 ? totalCapex / amortizationYears : 0;
+            const totalAnnualCostRaw = amortizedCapex + totalOpex;
+            const totalHourlyCostRaw = totalAnnualCostRaw / (365 * 24);
+            const totalAnnualCostWithMargin = totalAnnualCostRaw * (1 + profitMargin);
+            const totalHourlyCostWithMargin = totalAnnualCostWithMargin / (365 * 24);
+
+            document.getElementById('totalAnnualCost').innerText = formatCurrency(totalAnnualCostWithMargin);
+            document.getElementById('totalHourlyCost').innerText = formatCurrency(totalHourlyCostWithMargin, 4);
+
+            // --- Model-Specific Calculations ---
+            const selectedModel = document.querySelector('input[name="financialModel"]:checked').value;
+            
+            if (selectedModel === 'standard') {
+                const breakEvenPriceCpu = (utilizationRate > 0 && totalVcpu > 0) ? (totalHourlyCostRaw * cpuWeight) / (totalVcpu * utilizationRate) : 0;
+                const priceCpu = breakEvenPriceCpu * (1 + profitMargin);
+                document.getElementById('priceCpu').innerText = formatCurrency(priceCpu, 5);
+                document.getElementById('breakEvenPriceCpu').innerText = formatCurrency(breakEvenPriceCpu, 5);
+
+                const breakEvenPriceRam = (utilizationRate > 0 && totalRam > 0) ? (totalHourlyCostRaw * ramWeight) / (totalRam * utilizationRate) : 0;
+                const priceRam = breakEvenPriceRam * (1 + profitMargin);
+                document.getElementById('priceRam').innerText = formatCurrency(priceRam, 5);
+                document.getElementById('breakEvenPriceRam').innerText = formatCurrency(breakEvenPriceRam, 5);
+
+                const breakEvenPriceStorage = (utilizationRate > 0 && totalStorage > 0) ? (totalHourlyCostRaw * storageWeight) / (totalStorage * utilizationRate) : 0;
+                const priceStorage = breakEvenPriceStorage * (1 + profitMargin);
+                document.getElementById('priceStorage').innerText = formatCurrency(priceStorage, 5);
+                document.getElementById('breakEvenPriceStorage').innerText = formatCurrency(breakEvenPriceStorage, 5);
+
+            } else if (selectedModel === 'vci') {
+                 const breakEvenVciCost = numProjects > 0 ? totalAnnualCostRaw / numProjects : 0;
+                 const vciCost = breakEvenVciCost * (1 + profitMargin);
+                 document.getElementById('vciCost').innerText = formatCurrency(vciCost);
+                 document.getElementById('breakEvenVciCost').innerText = formatCurrency(breakEvenVciCost);
+
+            } else if (selectedModel === 'hybrid') {
+                 const baseAnnualCostTotalRaw = totalAnnualCostRaw * baseCostSplit;
+                 const overageAnnualCostTotalRaw = totalAnnualCostRaw * (1 - baseCostSplit);
+                 
+                 const breakEvenBaseCostPerTenant = numProjects > 0 ? baseAnnualCostTotalRaw / numProjects : 0;
+                 const hybridBaseCost = breakEvenBaseCostPerTenant * (1+profitMargin);
+                 document.getElementById('hybridBaseCost').innerText = formatCurrency(hybridBaseCost);
+                 document.getElementById('breakEvenHybridBaseCost').innerText = formatCurrency(breakEvenBaseCostPerTenant);
+
+                 const overageHourlyCostRaw = overageAnnualCostTotalRaw / (365*24);
+
+                 const breakEvenOveragePriceCpu = (overageUtilization > 0 && totalVcpu > 0) ? (overageHourlyCostRaw * cpuWeight) / (totalVcpu * overageUtilization) : 0;
+                 const overagePriceCpu = breakEvenOveragePriceCpu * (1 + profitMargin);
+                 document.getElementById('hybridCpuOverage').innerText = formatCurrency(overagePriceCpu, 5);
+                 document.getElementById('breakEvenHybridCpuOverage').innerText = formatCurrency(breakEvenOveragePriceCpu, 5);
+
+
+                 const breakEvenOveragePriceRam = (overageUtilization > 0 && totalRam > 0) ? (overageHourlyCostRaw * ramWeight) / (totalRam * overageUtilization) : 0;
+                 const overagePriceRam = breakEvenOveragePriceRam * (1+profitMargin);
+                 document.getElementById('hybridRamOverage').innerText = formatCurrency(overagePriceRam, 5);
+                 document.getElementById('breakEvenHybridRamOverage').innerText = formatCurrency(breakEvenOveragePriceRam, 5);
+            }
+            saveState(); // Save state on every calculation
+        }
+        
+        // --- RENDER FORMULAS WITH KATEX ---
+        function renderFormulas() {
+             try {
+                katex.render("C_{annual} = \\frac{\\sum C_{CapEx}}{A_y} + \\sum C_{OpEx}", document.getElementById('formula-std-1'));
+                katex.render("R_{unit} = \\frac{C_{hourly} \\times W_{unit}}{N_{unit} \\times U_{target}}", document.getElementById('formula-std-2'));
+                katex.render("P_{unit} = R_{unit} \\times (1 + M)", document.getElementById('formula-std-3'));
+                
+                katex.render("C_{project} = \\frac{C_{annual} \\times (1 + M)}{N_{projects}}", document.getElementById('formula-vci-1'));
+                
+                katex.render("C_{base} = \\frac{C_{annual} \\times B_{split}}{N_{projects}}", document.getElementById('formula-hybrid-1'));
+                katex.render("P_{overage} = \\frac{C_{hourly} \\times (1 - B_{split}) \\times W_{unit}}{N_{unit} \\times U_{overage}}", document.getElementById('formula-hybrid-2'));
+             } catch(e) { console.error("KaTeX rendering failed:", e); }
+        }
+
+        // --- NEW EXPORT TO EXCEL FUNCTION WITH FORMULAS ---
+        function exportToExcelWithFormulas() {
+            const wb = XLSX.utils.book_new();
+            const modelName = document.querySelector('input[name="financialModel"]:checked+label').textContent;
+            
+            // --- Sheet 1: Inputs & Calculations ---
+            const calcSheetData = [
+                ["FinOps Calculator Inputs & Logic"], [],
+                ["Section", "Parameter", "Value", "Notes"],
+                ["General", "Financial Model", modelName],
+                ["General", "Report Date", new Date().toLocaleDateString()],
+                ["General", "Currency", currentCurrency], [],
+                ["Core Inputs", "Amortization Period (Years)", getVal('amortizationYears')],
+                ["Core Inputs", "Profit Margin (%)", getVal('profitMargin')],
+                ["Core Inputs", "Target Utilization Rate (%)", getVal('utilizationRate')],
+                ["Core Inputs", "Number of Projects / Tenants", getVal('numProjects')],
+                ["Core Inputs", "Base Cost Split (%)", getVal('baseCostSplit')],
+                ["Core Inputs", "Overage Utilization Target (%)", getVal('overageUtilization')], [],
+                ["Cost Allocation", "CPU Weight (%)", getVal('cpuWeight')],
+                ["Cost Allocation", "RAM Weight (%)", getVal('ramWeight')],
+                ["Cost Allocation", "Storage Weight (%)", getVal('storageWeight')], [],
+                ["Infrastructure Capacity", "Total Physical Servers", getVal('totalServers')],
+                ["Infrastructure Capacity", "vCPU per Physical Core Ratio", getVal('vcpuRatio')],
+                ["Infrastructure Capacity", "Physical CPU Cores per Server", getVal('coresPerServer')],
+                ["Infrastructure Capacity", "RAM (GB) per Server", getVal('ramPerServer')],
+                ["Infrastructure Capacity", "Storage (GB) per Server", getVal('storagePerServer')],
+            ];
+            const ws_calc = XLSX.utils.aoa_to_sheet(calcSheetData);
+
+            ws_calc['C24'] = { f: 'C18*C20*C19', t: 'n', z: '#,##0' };
+            ws_calc['C25'] = { f: 'C18*C21', t: 'n', z: '#,##0' };
+            ws_calc['C26'] = { f: 'C18*C22', t: 'n', z: '#,##0' };
+
+            XLSX.utils.sheet_add_aoa(ws_calc, [
+                [],
+                ["Calculations", "Parameter", "Value"],
+                ["", "Total CapEx", { f: "SUM(CapEx!D:D)" }],
+                ["", "Total Annual OpEx", { f: "SUM(OpEx!B:B)" }], // Note: Column B for OpEx
+                ["", "Amortized Annual CapEx", { f: 'C29/C8' }],
+                ["", "Total Annual Cost (Raw)", { f: 'C31+C30' }],
+                ["", "Total Annual Cost (inc. Margin)", { f: 'C32*(1+(C9/100))' }],
+                ["", "Total Hourly Cost (inc. Margin)", { f: 'C33/(365*24)' }],
+            ], { origin: "A27" });
+            
+            ws_calc['!cols'] = [{ wch: 25 }, { wch: 30 }, { wch: 15 }];
+            XLSX.utils.book_append_sheet(wb, ws_calc, "Inputs_And_Calculations");
+
+            // --- Sheet 2: CapEx Details ---
+            const capexData = [["Item", "Cost per Unit", "Quantity", "Total Cost"]];
+            let capexRowNum = 2;
+            document.querySelectorAll('#capex-body tr').forEach(row => {
+                capexData.push([
+                    row.querySelector('.item-input').value,
+                    parseFloat(row.querySelector('.cost-input').value) || 0,
+                    parseFloat(row.querySelector('.qty-input').value) || 0,
+                    { f: `B${capexRowNum}*C${capexRowNum}`, t: 'n', z: `"${currentCurrency === 'EUR' ? '€' : currentCurrency === 'INR' ? '₹' : currentCurrency === 'GBP' ? '£' : '$'}" #,##0.00` }
+                ]);
+                capexRowNum++;
+            });
+            const ws_capex = XLSX.utils.aoa_to_sheet(capexData);
+            ws_capex['!cols'] = [{ wch: 30 }, { wch: 15 }, { wch: 10 }, { wch: 20 }];
+            XLSX.utils.book_append_sheet(wb, ws_capex, "CapEx");
+
+            // --- Sheet 3: OpEx Details ---
+            const opexData = [["Item", "Annual Cost"]];
+            document.querySelectorAll('#opex-body tr').forEach(row => {
+                opexData.push([
+                    row.querySelector('.item-input').value,
+                    parseFloat(row.querySelector('.cost-input').value) || 0,
+                ]);
+            });
+            const ws_opex = XLSX.utils.aoa_to_sheet(opexData);
+            ws_opex['!cols'] = [{ wch: 30 }, { wch: 20 }];
+            XLSX.utils.book_append_sheet(wb, ws_opex, "OpEx");
+            
+            // --- Sheet 4: Summary ---
+            const currencyFormat = (decimals) => `"${currentCurrency === 'EUR' ? '€' : currentCurrency === 'INR' ? '₹' : currentCurrency === 'GBP' ? '£' : '$'}" #,##0.${'0'.repeat(decimals)}`;
+            const summaryData = [
+                ["FinOps Calculator Summary"], [],
+                ["Model", modelName], ["Date", new Date().toLocaleDateString()], [],
+                ["Result", "Value"],
+                ["Total Annual Cost (inc. Margin)", { f: 'Inputs_And_Calculations!C33', t: 'n', z: currencyFormat(2) }],
+                ["Total Hourly Cost (inc. Margin)", { f: 'Inputs_And_Calculations!C34', t: 'n', z: currencyFormat(4) }],
+            ];
+            
+            const baseUtilFormula = `Inputs_And_Calculations!C10/100`;
+
+            if (modelName.includes("Standard")) {
+                summaryData.push(["Price per vCPU/Hour", {f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C15/100))/(Inputs_And_Calculations!C24*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5)}]);
+                summaryData.push(["Price per GB RAM/Hour", {f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C16/100))/(Inputs_And_Calculations!C25*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5)}]);
+                summaryData.push(["Price per GB Storage/Hour", {f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C17/100))/(Inputs_And_Calculations!C26*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5)}]);
+            } else if (modelName.includes("VCI")) {
+                summaryData.push(["Annual Cost per Project", {f: `Inputs_And_Calculations!C33/Inputs_And_Calculations!C11`, t: 'n', z: currencyFormat(2)}]);
+            } else if (modelName.includes("Hybrid")) {
+                summaryData.push(["Base Annual Cost per Tenant", {f: `(Inputs_And_Calculations!C33 * (Inputs_And_Calculations!C12/100)) / Inputs_And_Calculations!C11`, t: 'n', z: currencyFormat(2)}]);
+                const overageHourly = `(Inputs_And_Calculations!C34 * (1-(Inputs_And_Calculations!C12/100)))`;
+                const overageUtil = `(Inputs_And_Calculations!C13/100)`;
+                summaryData.push(["Overage vCPU Rate /Hour", {f: `(${overageHourly} * (Inputs_And_Calculations!C15/100)) / (Inputs_And_Calculations!C24*${overageUtil})`, t: 'n', z: currencyFormat(5)}]);
+                summaryData.push(["Overage GB RAM Rate /Hour", {f: `(${overageHourly} * (Inputs_And_Calculations!C16/100)) / (Inputs_And_Calculations!C25*${overageUtil})`, t: 'n', z: currencyFormat(5)}]);
+            }
+            const ws_summary = XLSX.utils.aoa_to_sheet(summaryData);
+            ws_summary['!cols'] = [{ wch: 30 }, { wch: 20 }];
+            XLSX.utils.book_append_sheet(wb, ws_summary, "Summary");
+
+            const fileName = `FinOps_Interactive_Report_${modelName.replace(/ /g, '_')}_${new Date().toISOString().slice(0,10)}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+        }
+
+        // --- LOCAL STORAGE FUNCTIONS ---
+        function saveState() {
+            const capexRows = Array.from(document.querySelectorAll('#capex-body tr')).map(row => ({
+                item: row.querySelector('.item-input').value,
+                cost: row.querySelector('.cost-input').value,
+                qty: row.querySelector('.qty-input').value,
+            }));
+            const opexRows = Array.from(document.querySelectorAll('#opex-body tr')).map(row => ({
+                item: row.querySelector('.item-input').value,
+                cost: row.querySelector('.cost-input').value,
+            }));
+
+            const state = {
+                amortizationYears: getVal('amortizationYears'),
+                utilizationRate: getVal('utilizationRate'),
+                numProjects: getVal('numProjects'),
+                baseCostSplit: getVal('baseCostSplit'),
+                overageUtilization: getVal('overageUtilization'),
+                profitMargin: getVal('profitMargin'),
+                cpuWeight: getVal('cpuWeight'),
+                ramWeight: getVal('ramWeight'),
+                storageWeight: getVal('storageWeight'),
+                totalServers: getVal('totalServers'),
+                vcpuRatio: getVal('vcpuRatio'),
+                coresPerServer: getVal('coresPerServer'),
+                ramPerServer: getVal('ramPerServer'),
+                storagePerServer: getVal('storagePerServer'),
+                capex: capexRows,
+                opex: opexRows,
+                selectedModel: document.querySelector('input[name="financialModel"]:checked')?.value,
+                selectedTheme: document.getElementById('theme-selector').value,
+                selectedCurrency: document.getElementById('currency-selector').value,
+            };
+            localStorage.setItem('finopsCalculatorState', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem('finopsCalculatorState');
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    Object.keys(state).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element && typeof state[key] !== 'object') {
+                            element.value = state[key];
+                        }
+                    });
+
+                    document.getElementById('capex-body').innerHTML = '';
+                    state.capex?.forEach(row => addCapexRow(row.item, row.cost, row.qty));
+                    document.getElementById('opex-body').innerHTML = '';
+                    state.opex?.forEach(row => addOpexRow(row.item, row.cost));
+
+                    document.getElementById('theme-selector').value = state.selectedTheme || 'light';
+                    document.getElementById('currency-selector').value = state.selectedCurrency || 'USD';
+                    
+                    const modelRadio = document.querySelector(`input[name="financialModel"][value="${state.selectedModel}"]`);
+                    if (modelRadio) modelRadio.checked = true;
+                    else document.getElementById('modelStandard').checked = true;
+
+                    // Manually trigger change events to update UI
+                    document.getElementById('theme-selector').dispatchEvent(new Event('change'));
+                    document.getElementById('currency-selector').dispatchEvent(new Event('change'));
+                    return true;
+                } catch(e) {
+                    console.error("Failed to load state from localStorage:", e);
+                    localStorage.removeItem('finopsCalculatorState');
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            const stateLoaded = loadState();
+
+            if (!stateLoaded) {
+                document.getElementById('modelStandard').checked = true;
+                addCapexRow('Dell PowerEdge R760', 12000, 1000);
+                addCapexRow('Cisco Nexus 93180YC-FX Switch', 15000, 50);
+                addOpexRow('Data Center Rental', 1200000);
+                addOpexRow('Power & Cooling', 800000);
+                addOpexRow('Software Licensing (VMware, etc)', 2500000);
+                addOpexRow('Network Bandwidth', 600000);
+                addOpexRow('Staff Salaries (Engineers)', 1800000);
+            }
+            
             switchModel();
+            renderFormulas();
+
+            if(!stateLoaded) {
+                 document.getElementById('exportButton').disabled = true;
+                 document.getElementById('export-tooltip').innerText = "Make a change to enable export.";
+            }
         };
+
     </script>
+
 </body>
 </html>
+
