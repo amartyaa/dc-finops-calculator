@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en" class="portfolio">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- KaTeX for rendering math formulas -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0KOVEMutoExTqlSFyLCT0ueC6cGI4MQTyWsTGKUj+nKzSQwNHcdnK" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+        xintegrity="sha384-n8MVd4RsNIU0KOVEMutoExTqlSFyLCT0ueC6cGI4MQTyWsTGKUj+nKzSQwNHcdnK" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+        xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8"
+        crossorigin="anonymous"></script>
     <!-- SheetJS for Excel Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
@@ -30,6 +34,7 @@
             --theme-success-text: #166534;
             --theme-info-bg: #eff6ff;
         }
+
         html.dark {
             --theme-bg: #0f172a;
             --theme-text: #e2e8f0;
@@ -43,6 +48,7 @@
             --theme-success-text: #4ade80;
             --theme-info-bg: rgba(30, 58, 138, 0.2);
         }
+
         html.openshift {
             --theme-bg: #1a1a1a;
             --theme-text: #d2d2d2;
@@ -56,6 +62,7 @@
             --theme-success-text: #ff8a8a;
             --theme-info-bg: rgba(238, 0, 0, 0.1);
         }
+
         html.saas {
             --theme-bg: #0d1117;
             --theme-text: #c9d1d9;
@@ -70,58 +77,129 @@
             --theme-info-bg: rgba(88, 166, 255, 0.1);
         }
 
+        html.portfolio {
+            --theme-bg: #0a0a0a;
+            --theme-text: #ffffff;
+            --theme-card-bg: #161616;
+            --theme-card-bg-alt: #222222;
+            --theme-border: #333333;
+            --theme-accent: #00f2ff;
+            --theme-accent-hover: #008f99;
+            --theme-input-bg: #000000;
+            --theme-output-text: #00f2ff;
+            --theme-success-text: #00f2ff;
+            --theme-info-bg: rgba(0, 242, 255, 0.1);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--theme-bg);
             color: var(--theme-text);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+
         .card {
             background-color: var(--theme-card-bg);
             transition: background-color 0.3s ease;
         }
+
         .card-alt {
             background-color: var(--theme-card-bg-alt);
-             transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease;
         }
-        .border-theme { border-color: var(--theme-border); }
-        .text-theme-accent { color: var(--theme-accent); }
-        .bg-theme-accent { background-color: var(--theme-accent); }
-        .bg-theme-accent-hover:hover { background-color: var(--theme-accent-hover); }
-        .input-cell { background-color: var(--theme-input-bg); border-color: var(--theme-border); }
-        .output-cell { color: var(--theme-output-text); }
-        .success-text { color: var(--theme-success-text); }
-        .section-title { border-bottom-color: var(--theme-accent); }
-        .info-box { background-color: var(--theme-info-bg); border-left-color: var(--theme-accent); }
 
-        .katex { font-size: 1.1em !important; }
-        .table-container { overflow-x: auto; }
-        table { border-collapse: separate; border-spacing: 0; width: 100%; }
+        .border-theme {
+            border-color: var(--theme-border);
+        }
+
+        .text-theme-accent {
+            color: var(--theme-accent);
+        }
+
+        .bg-theme-accent {
+            background-color: var(--theme-accent);
+        }
+
+        .bg-theme-accent-hover:hover {
+            background-color: var(--theme-accent-hover);
+        }
+
+        .input-cell {
+            background-color: var(--theme-input-bg);
+            border-color: var(--theme-border);
+        }
+
+        .output-cell {
+            color: var(--theme-output-text);
+        }
+
+        .success-text {
+            color: var(--theme-success-text);
+        }
+
+        .section-title {
+            border-bottom-color: var(--theme-accent);
+        }
+
+        .info-box {
+            background-color: var(--theme-info-bg);
+            border-left-color: var(--theme-accent);
+        }
+
+        .katex {
+            font-size: 1.1em !important;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
         .input-cell:focus {
             outline: none;
             box-shadow: 0 0 0 2px var(--theme-accent);
         }
-        .symbol { font-family: monospace; }
-        .model-selector input[type="radio"]:checked + label {
+
+        .symbol {
+            font-family: monospace;
+        }
+
+        .model-selector input[type="radio"]:checked+label {
             background-color: var(--theme-accent);
             color: white;
             border-color: var(--theme-accent);
         }
+
         .info-content {
             max-height: 0px;
             transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             padding: 0 1rem;
         }
-        .chevron { transition: transform 0.3s ease-in-out; }
-        .info-box.open .info-content { padding: 0 1rem 1rem 1rem; }
-        .info-box.open .chevron { transform: rotate(180deg); }
-        
+
+        .chevron {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .info-box.open .info-content {
+            padding: 0 1rem 1rem 1rem;
+        }
+
+        .info-box.open .chevron {
+            transform: rotate(180deg);
+        }
+
         /* Tooltip for export button */
         .tooltip-container {
             position: relative;
             display: inline-block;
         }
+
         .tooltip-text {
             visibility: hidden;
             width: 200px;
@@ -138,6 +216,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
+
         .tooltip-text::after {
             content: "";
             position: absolute;
@@ -148,12 +227,14 @@
             border-style: solid;
             border-color: #555 transparent transparent transparent;
         }
+
         .tooltip-container:hover .tooltip-text {
             visibility: visible;
             opacity: 1;
         }
     </style>
 </head>
+
 <body class="transition-colors duration-300">
     <div class="max-w-screen-2xl mx-auto p-4 md:p-8">
         <header class="flex justify-between items-center mb-8 gap-4">
@@ -161,7 +242,8 @@
             <div class="flex items-center gap-4">
                 <!-- CURRENCY SELECTOR -->
                 <div class="relative">
-                    <select id="currency-selector" class="p-2 rounded-md border-theme border bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-theme-accent appearance-none">
+                    <select id="currency-selector"
+                        class="p-2 rounded-md border-theme border bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-theme-accent appearance-none">
                         <option value="USD">USD ($)</option>
                         <option value="EUR">EUR (€)</option>
                         <option value="INR">INR (₹)</option>
@@ -170,7 +252,9 @@
                 </div>
                 <!-- THEME SELECTOR -->
                 <div class="relative">
-                    <select id="theme-selector" class="p-2 rounded-md border-theme border bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-theme-accent appearance-none">
+                    <select id="theme-selector"
+                        class="p-2 rounded-md border-theme border bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-theme-accent appearance-none">
+                        <option value="portfolio">Default</option>
                         <option value="light">Light</option>
                         <option value="dark">Dark</option>
                         <option value="openshift">Openshift</option>
@@ -184,30 +268,50 @@
         <div class="mb-8 p-4 card rounded-xl shadow-md">
             <h2 class="text-xl font-bold text-center mb-4">Select a Financial Model</h2>
             <div class="flex justify-center items-center flex-wrap gap-4 model-selector">
-                <input type="radio" id="modelStandard" name="financialModel" value="standard" onchange="switchModel()" class="hidden">
-                <label for="modelStandard" class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Standard Utilization</label>
-                
-                <input type="radio" id="modelVCI" name="financialModel" value="vci" onchange="switchModel()" class="hidden">
-                <label for="modelVCI" class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Equal Share Model</label>
+                <input type="radio" id="modelStandard" name="financialModel" value="standard" onchange="switchModel()"
+                    class="hidden">
+                <label for="modelStandard"
+                    class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Standard
+                    Utilization</label>
 
-                <input type="radio" id="modelHybrid" name="financialModel" value="hybrid" onchange="switchModel()" class="hidden">
-                <label for="modelHybrid" class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Tiered Hybrid</label>
+                <input type="radio" id="modelVCI" name="financialModel" value="vci" onchange="switchModel()"
+                    class="hidden">
+                <label for="modelVCI"
+                    class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Equal Share
+                    Model</label>
+
+                <input type="radio" id="modelHybrid" name="financialModel" value="hybrid" onchange="switchModel()"
+                    class="hidden">
+                <label for="modelHybrid"
+                    class="px-6 py-3 rounded-lg border border-theme cursor-pointer transition-all">Tiered Hybrid</label>
             </div>
             <!-- Model Information Box -->
             <div id="model-info-container" class="mt-6">
                 <div id="info-standard" class="model-info info-box border-l-4 rounded-r-lg">
-                    <div class="info-header flex justify-between items-center cursor-pointer p-4" onclick="toggleInfoBox('info-standard')">
+                    <div class="info-header flex justify-between items-center cursor-pointer p-4"
+                        onclick="toggleInfoBox('info-standard')">
                         <h3 class="font-bold text-lg">Model Information: Standard Utilization</h3>
-                        <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
                     </div>
                     <div class="info-content">
-                        <p class="mt-2">This model calculates a fixed hourly price for resources based on a forecasted **Target Utilization Rate**. It's ideal for creating a predictable price list for customers (IaaS/SaaS) but carries the risk of financial loss if actual usage is lower than the target.</p>
+                        <p class="mt-2">This model calculates a fixed hourly price for resources based on a forecasted
+                            **Target Utilization Rate**. It's ideal for creating a predictable price list for customers
+                            (IaaS/SaaS) but carries the risk of financial loss if actual usage is lower than the target.
+                        </p>
                         <h4 class="font-semibold mt-4">Formulas & Logic:</h4>
-                        <p>1. Calculate Total Annual Cost (<span class="symbol">C<sub>annual</sub></span>): The yearly operational costs are added to the amortized capital costs.</p>
+                        <p>1. Calculate Total Annual Cost (<span class="symbol">C<sub>annual</sub></span>): The yearly
+                            operational costs are added to the amortized capital costs.</p>
                         <span class="formula" id="formula-std-1"></span>
-                        <p>2. Determine Break-Even Rate (<span class="symbol">R<sub>unit</sub></span>): The total hourly cost is allocated to each resource type (CPU, RAM) based on its weight, then divided by the *usable* capacity (total capacity adjusted for target utilization).</p>
+                        <p>2. Determine Break-Even Rate (<span class="symbol">R<sub>unit</sub></span>): The total hourly
+                            cost is allocated to each resource type (CPU, RAM) based on its weight, then divided by the
+                            *usable* capacity (total capacity adjusted for target utilization).</p>
                         <span class="formula" id="formula-std-2"></span>
-                        <p>3. Calculate Final Price (<span class="symbol">P<sub>unit</sub></span>): A profit margin is added to the break-even rate.</p>
+                        <p>3. Calculate Final Price (<span class="symbol">P<sub>unit</sub></span>): A profit margin is
+                            added to the break-even rate.</p>
                         <span class="formula" id="formula-std-3"></span>
                         <h4 class="font-semibold mt-4">Legend:</h4>
                         <ul>
@@ -215,22 +319,34 @@
                             <li><span class="symbol">A<sub>y</sub></span>: Amortization Period (Years)</li>
                             <li><span class="symbol">C<sub>OpEx</sub></span>: Total Annual Operational Expenditures</li>
                             <li><span class="symbol">C<sub>hourly</sub></span>: Total Hourly Cost of Infrastructure</li>
-                            <li><span class="symbol">W<sub>unit</sub></span>: Cost Allocation Weight for the resource</li>
-                            <li><span class="symbol">N<sub>unit</sub></span>: Total number of units for the resource (e.g., total vCPUs)</li>
+                            <li><span class="symbol">W<sub>unit</sub></span>: Cost Allocation Weight for the resource
+                            </li>
+                            <li><span class="symbol">N<sub>unit</sub></span>: Total number of units for the resource
+                                (e.g., total vCPUs)</li>
                             <li><span class="symbol">U<sub>target</sub></span>: Target Utilization Rate</li>
-                             <li><span class="symbol">M</span>: Profit Margin</li>
+                            <li><span class="symbol">M</span>: Profit Margin</li>
                         </ul>
                     </div>
                 </div>
                 <div id="info-vci" class="model-info info-box border-l-4 rounded-r-lg" style="display: none;">
-                    <div class="info-header flex justify-between items-center cursor-pointer p-4" onclick="toggleInfoBox('info-vci')">
+                    <div class="info-header flex justify-between items-center cursor-pointer p-4"
+                        onclick="toggleInfoBox('info-vci')">
                         <h3 class="font-bold text-lg">Model Information: Equal Share</h3>
-                        <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
                     </div>
                     <div class="info-content">
-                        <p class="mt-2">This model is used for internal cost allocation (chargeback) rather than public pricing. It ignores individual resource consumption and divides the total annual cost of the infrastructure (plus a margin) equally among a known number of projects or tenants. This ensures full cost recovery and provides simple, predictable budgeting for each tenant. The cost is revised as new tenants join.</p>
+                        <p class="mt-2">This model is used for internal cost allocation (chargeback) rather than public
+                            pricing. It ignores individual resource consumption and divides the total annual cost of the
+                            infrastructure (plus a margin) equally among a known number of projects or tenants. This
+                            ensures full cost recovery and provides simple, predictable budgeting for each tenant. The
+                            cost is revised as new tenants join.</p>
                         <h4 class="font-semibold mt-4">Formula & Logic:</h4>
-                        <p>1. Calculate Annual Cost per Project (<span class="symbol">C<sub>project</sub></span>): The total annual cost (with profit margin) is simply divided by the number of projects.</p>
+                        <p>1. Calculate Annual Cost per Project (<span class="symbol">C<sub>project</sub></span>): The
+                            total annual cost (with profit margin) is simply divided by the number of projects.</p>
                         <span class="formula" id="formula-vci-1"></span>
                         <h4 class="font-semibold mt-4">Legend:</h4>
                         <ul>
@@ -240,24 +356,36 @@
                         </ul>
                     </div>
                 </div>
-                 <div id="info-hybrid" class="model-info info-box border-l-4 rounded-r-lg" style="display: none;">
-                    <div class="info-header flex justify-between items-center cursor-pointer p-4" onclick="toggleInfoBox('info-hybrid')">
+                <div id="info-hybrid" class="model-info info-box border-l-4 rounded-r-lg" style="display: none;">
+                    <div class="info-header flex justify-between items-center cursor-pointer p-4"
+                        onclick="toggleInfoBox('info-hybrid')">
                         <h3 class="font-bold text-lg">Model Information: Tiered Hybrid</h3>
-                        <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="chevron w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
                     </div>
                     <div class="info-content">
-                        <p class="mt-2">This advanced model blends predictability and fairness. Each tenant pays a fixed **Base Cost** which covers a resource **Allowance**. Usage beyond this allowance is billed at a higher **Overage Rate**. This guarantees revenue to cover fixed costs while charging heavy users appropriately.</p>
+                        <p class="mt-2">This advanced model blends predictability and fairness. Each tenant pays a fixed
+                            **Base Cost** which covers a resource **Allowance**. Usage beyond this allowance is billed
+                            at a higher **Overage Rate**. This guarantees revenue to cover fixed costs while charging
+                            heavy users appropriately.</p>
                         <h4 class="font-semibold mt-4">Formulas & Logic:</h4>
-                        <p>1. Calculate Base Cost per Tenant (<span class="symbol">C<sub>base</sub></span>): A portion of the total annual cost is designated as the base and divided among tenants.</p>
+                        <p>1. Calculate Base Cost per Tenant (<span class="symbol">C<sub>base</sub></span>): A portion
+                            of the total annual cost is designated as the base and divided among tenants.</p>
                         <span class="formula" id="formula-hybrid-1"></span>
-                        <p>2. Calculate Overage Rate (<span class="symbol">P<sub>overage</sub></span>): The remaining annual cost is recovered through overage, priced at a premium (lower effective utilization).</p>
+                        <p>2. Calculate Overage Rate (<span class="symbol">P<sub>overage</sub></span>): The remaining
+                            annual cost is recovered through overage, priced at a premium (lower effective utilization).
+                        </p>
                         <span class="formula" id="formula-hybrid-2"></span>
                         <h4 class="font-semibold mt-4">Legend:</h4>
                         <ul>
                             <li><span class="symbol">C<sub>annual</sub></span>: Total Annual Cost of Infrastructure</li>
                             <li><span class="symbol">B<sub>split</sub></span>: Base Cost Split (e.g., 80%)</li>
                             <li><span class="symbol">N<sub>projects</sub></span>: Number of Projects / Tenants</li>
-                            <li><span class="symbol">U<sub>overage</sub></span>: Effective Utilization for Overage Pricing</li>
+                            <li><span class="symbol">U<sub>overage</sub></span>: Effective Utilization for Overage
+                                Pricing</li>
                             <li>* Other symbols are the same as the Standard Model.</li>
                         </ul>
                     </div>
@@ -277,55 +405,84 @@
                         <table class="w-full">
                             <thead class="card-alt">
                                 <tr>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Parameter</th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Parameter
+                                    </th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Value</th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Notes</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y border-theme">
                                 <tr>
-                                    <td class="p-3">Amortization Period (Years) <span class="symbol">(A<sub>y</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="amortizationYears" class="input-cell w-full p-2 rounded-md" value="3" oninput="calculateModel()"></td>
+                                    <td class="p-3">Amortization Period (Years) <span
+                                            class="symbol">(A<sub>y</sub>)</span></td>
+                                    <td class="p-3"><input type="number" id="amortizationYears"
+                                            class="input-cell w-full p-2 rounded-md" value="3"
+                                            oninput="calculateModel()"></td>
                                     <td class="p-3 notes text-sm text-gray-500">Hardware lifespan</td>
                                 </tr>
                                 <tr class="model-input standard">
-                                    <td class="p-3">Target Utilization Rate (%) <span class="symbol">(U<sub>target</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="utilizationRate" class="input-cell w-full p-2 rounded-md" value="65" oninput="calculateModel()"></td>
+                                    <td class="p-3">Target Utilization Rate (%) <span
+                                            class="symbol">(U<sub>target</sub>)</span></td>
+                                    <td class="p-3"><input type="number" id="utilizationRate"
+                                            class="input-cell w-full p-2 rounded-md" value="65"
+                                            oninput="calculateModel()"></td>
                                     <td class="p-3 notes text-sm text-gray-500">The ideal usage rate for pricing</td>
                                 </tr>
                                 <tr class="model-input vci hybrid" style="display: none;">
-                                    <td class="p-3">Number of Projects / Tenants <span class="symbol">(N<sub>projects</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="numProjects" class="input-cell w-full p-2 rounded-md" value="50" oninput="calculateModel()"></td>
+                                    <td class="p-3">Number of Projects / Tenants <span
+                                            class="symbol">(N<sub>projects</sub>)</span></td>
+                                    <td class="p-3"><input type="number" id="numProjects"
+                                            class="input-cell w-full p-2 rounded-md" value="50"
+                                            oninput="calculateModel()"></td>
                                     <td class="p-3 notes text-sm text-gray-500">Total tenants sharing the cost</td>
                                 </tr>
-                                 <tr class="model-input hybrid" style="display: none;">
-                                    <td class="p-3">Base Cost Split (%) <span class="symbol">(B<sub>split</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="baseCostSplit" class="input-cell w-full p-2 rounded-md" value="80" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes text-sm text-gray-500">% of total cost covered by base fees</td>
+                                <tr class="model-input hybrid" style="display: none;">
+                                    <td class="p-3">Base Cost Split (%) <span class="symbol">(B<sub>split</sub>)</span>
+                                    </td>
+                                    <td class="p-3"><input type="number" id="baseCostSplit"
+                                            class="input-cell w-full p-2 rounded-md" value="80"
+                                            oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">% of total cost covered by base fees
+                                    </td>
                                 </tr>
                                 <tr class="model-input hybrid" style="display: none;">
-                                    <td class="p-3">Overage Utilization Target (%) <span class="symbol">(U<sub>overage</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="overageUtilization" class="input-cell w-full p-2 rounded-md" value="40" oninput="calculateModel()"></td>
-                                    <td class="p-3 notes text-sm text-gray-500">Lower utilization implies higher overage rate</td>
+                                    <td class="p-3">Overage Utilization Target (%) <span
+                                            class="symbol">(U<sub>overage</sub>)</span></td>
+                                    <td class="p-3"><input type="number" id="overageUtilization"
+                                            class="input-cell w-full p-2 rounded-md" value="40"
+                                            oninput="calculateModel()"></td>
+                                    <td class="p-3 notes text-sm text-gray-500">Lower utilization implies higher overage
+                                        rate</td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">Profit Margin (%) <span class="symbol">(M)</span></td>
-                                    <td class="p-3"><input type="number" id="profitMargin" class="input-cell w-full p-2 rounded-md" value="20" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="profitMargin"
+                                            class="input-cell w-full p-2 rounded-md" value="20"
+                                            oninput="calculateModel()"></td>
                                     <td class="p-3 notes text-sm text-gray-500">Profit on top of cost</td>
                                 </tr>
                                 <tr class="model-input standard hybrid">
-                                    <td class="p-3 font-semibold">Cost Allocation: CPU Weight (%) <span class="symbol">(W<sub>cpu</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="cpuWeight" class="input-cell w-full p-2 rounded-md" value="85" oninput="calculateModel()"></td>
+                                    <td class="p-3 font-semibold">Cost Allocation: CPU Weight (%) <span
+                                            class="symbol">(W<sub>cpu</sub>)</span></td>
+                                    <td class="p-3"><input type="number" id="cpuWeight"
+                                            class="input-cell w-full p-2 rounded-md" value="85"
+                                            oninput="calculateModel()"></td>
                                     <td class="p-3 notes text-sm text-gray-500">Must sum to 100%</td>
                                 </tr>
                                 <tr class="model-input standard hybrid">
-                                    <td class="p-3 font-semibold">Cost Allocation: RAM Weight (%) <span class="symbol">(W<sub>ram</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="ramWeight" class="input-cell w-full p-2 rounded-md" value="10" oninput="calculateModel()"></td>
+                                    <td class="p-3 font-semibold">Cost Allocation: RAM Weight (%) <span
+                                            class="symbol">(W<sub>ram</sub>)</span></td>
+                                    <td class="p-3"><input type="number" id="ramWeight"
+                                            class="input-cell w-full p-2 rounded-md" value="10"
+                                            oninput="calculateModel()"></td>
                                     <td class="p-3 notes text-sm text-gray-500">Must sum to 100%</td>
                                 </tr>
                                 <tr class="model-input standard hybrid">
-                                    <td class="p-3 font-semibold">Cost Allocation: Storage Weight (%) <span class="symbol">(W<sub>storage</sub>)</span></td>
-                                    <td class="p-3"><input type="number" id="storageWeight" class="input-cell w-full p-2 rounded-md" value="5" oninput="calculateModel()"></td>
+                                    <td class="p-3 font-semibold">Cost Allocation: Storage Weight (%) <span
+                                            class="symbol">(W<sub>storage</sub>)</span></td>
+                                    <td class="p-3"><input type="number" id="storageWeight"
+                                            class="input-cell w-full p-2 rounded-md" value="5"
+                                            oninput="calculateModel()"></td>
                                     <td class="p-3 notes text-sm text-gray-500">Must sum to 100%</td>
                                 </tr>
                             </tbody>
@@ -335,12 +492,14 @@
 
                 <!-- Section 2: Total Infrastructure Capacity -->
                 <div class="card p-6 rounded-xl shadow-md">
-                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 2: Total Infrastructure Capacity</h2>
+                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 2: Total Infrastructure
+                        Capacity</h2>
                     <div class="table-container">
                         <table class="w-full">
-                           <thead class="card-alt">
+                            <thead class="card-alt">
                                 <tr>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Component</th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Component
+                                    </th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Value</th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Total</th>
                                 </tr>
@@ -348,41 +507,54 @@
                             <tbody class="divide-y border-theme">
                                 <tr>
                                     <td class="p-3">Total Physical Servers</td>
-                                    <td class="p-3"><input type="number" id="totalServers" class="input-cell w-full p-2 rounded-md" value="1000" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="totalServers"
+                                            class="input-cell w-full p-2 rounded-md" value="1000"
+                                            oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">vCPU per Physical Core Ratio</td>
-                                    <td class="p-3"><input type="number" id="vcpuRatio" class="input-cell w-full p-2 rounded-md" value="2" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="vcpuRatio"
+                                            class="input-cell w-full p-2 rounded-md" value="2"
+                                            oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">Physical CPU Cores per Server</td>
-                                    <td class="p-3"><input type="number" id="coresPerServer" class="input-cell w-full p-2 rounded-md" value="64" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="coresPerServer"
+                                            class="input-cell w-full p-2 rounded-md" value="64"
+                                            oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">RAM (GB) per Server</td>
-                                    <td class="p-3"><input type="number" id="ramPerServer" class="input-cell w-full p-2 rounded-md" value="512" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="ramPerServer"
+                                            class="input-cell w-full p-2 rounded-md" value="512"
+                                            oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="p-3">Storage (GB) per Server</td>
-                                    <td class="p-3"><input type="number" id="storagePerServer" class="input-cell w-full p-2 rounded-md" value="4000" oninput="calculateModel()"></td>
+                                    <td class="p-3"><input type="number" id="storagePerServer"
+                                            class="input-cell w-full p-2 rounded-md" value="4000"
+                                            oninput="calculateModel()"></td>
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class="p-3 font-semibold">Total vCPU Capacity <span class="symbol">(N<sub>cpu</sub>)</span></td>
+                                    <td class="p-3 font-semibold">Total vCPU Capacity <span
+                                            class="symbol">(N<sub>cpu</sub>)</span></td>
                                     <td></td>
                                     <td id="totalVcpu" class="output-cell p-3 font-semibold"></td>
                                 </tr>
                                 <tr>
-                                    <td class="p-3 font-semibold">Total RAM (GB) Capacity <span class="symbol">(N<sub>ram</sub>)</span></td>
+                                    <td class="p-3 font-semibold">Total RAM (GB) Capacity <span
+                                            class="symbol">(N<sub>ram</sub>)</span></td>
                                     <td></td>
                                     <td id="totalRam" class="output-cell p-3 font-semibold"></td>
                                 </tr>
                                 <tr>
-                                    <td class="p-3 font-semibold">Total Storage (GB) Capacity <span class="symbol">(N<sub>storage</sub>)</span></td>
+                                    <td class="p-3 font-semibold">Total Storage (GB) Capacity <span
+                                            class="symbol">(N<sub>storage</sub>)</span></td>
                                     <td></td>
                                     <td id="totalStorage" class="output-cell p-3 font-semibold"></td>
                                 </tr>
@@ -393,15 +565,19 @@
 
                 <!-- Section 3: Capital Expenditures (CapEx) -->
                 <div class="card p-6 rounded-xl shadow-md">
-                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 3: Capital Expenditures (CapEx)</h2>
-                     <div class="table-container">
+                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 3: Capital Expenditures
+                        (CapEx)</h2>
+                    <div class="table-container">
                         <table class="w-full">
                             <thead class="card-alt">
                                 <tr>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Item</th>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Cost per Unit (<span class="currency-symbol">$</span>)</th>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Quantity</th>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Total Cost (<span class="currency-symbol">$</span>)</th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Cost per
+                                        Unit (<span class="currency-symbol">$</span>)</th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Quantity
+                                    </th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Total Cost
+                                        (<span class="currency-symbol">$</span>)</th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
@@ -410,17 +586,24 @@
                             </tbody>
                             <tfoot>
                                 <tr class="card-alt">
-                                    <td colspan="3" class="p-3 font-bold text-right">Total CapEx <span class="symbol">(ΣC<sub>CapEx</sub>)</span></td>
+                                    <td colspan="3" class="p-3 font-bold text-right">Total CapEx <span
+                                            class="symbol">(ΣC<sub>CapEx</sub>)</span></td>
                                     <td id="totalCapex" class="output-cell font-bold p-3"></td>
                                     <td class="p-3"></td>
                                 </tr>
                                 <tr>
-                                     <td colspan="5" class="p-2">
-                                         <button class="w-full text-left p-3 border-2 border-dashed border-theme rounded-lg hover:bg-theme-card-bg-alt transition-colors flex items-center gap-2 text-theme-accent" onclick="addCapexRow()">
-                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                             Add New CapEx Item
-                                         </button>
-                                     </td>
+                                    <td colspan="5" class="p-2">
+                                        <button
+                                            class="w-full text-left p-3 border-2 border-dashed border-theme rounded-lg hover:bg-theme-card-bg-alt transition-colors flex items-center gap-2 text-theme-accent"
+                                            onclick="addCapexRow()">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                            Add New CapEx Item
+                                        </button>
+                                    </td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -429,13 +612,15 @@
 
                 <!-- Section 4: Annual Operational Expenditures (OpEx) -->
                 <div class="card p-6 rounded-xl shadow-md">
-                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 4: Annual Operational Expenditures (OpEx)</h2>
+                    <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Section 4: Annual Operational
+                        Expenditures (OpEx)</h2>
                     <div class="table-container">
                         <table class="w-full">
                             <thead class="card-alt">
                                 <tr>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Item</th>
-                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Annual Cost (<span class="currency-symbol">$</span>)</th>
+                                    <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Annual Cost
+                                        (<span class="currency-symbol">$</span>)</th>
                                     <th class="p-3 text-left text-sm font-semibold uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
@@ -444,17 +629,24 @@
                             </tbody>
                             <tfoot>
                                 <tr class="card-alt">
-                                    <td class="p-3 font-bold text-right">Total Annual OpEx <span class="symbol">(ΣC<sub>OpEx</sub>)</span></td>
+                                    <td class="p-3 font-bold text-right">Total Annual OpEx <span
+                                            class="symbol">(ΣC<sub>OpEx</sub>)</span></td>
                                     <td id="totalOpex" class="output-cell font-bold p-3"></td>
                                     <td class="p-3"></td>
                                 </tr>
-                                 <tr>
-                                     <td colspan="3" class="p-2">
-                                         <button class="w-full text-left p-3 border-2 border-dashed border-theme rounded-lg hover:bg-theme-card-bg-alt transition-colors flex items-center gap-2 text-theme-accent" onclick="addOpexRow()">
-                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                             Add New OpEx Item
-                                         </button>
-                                     </td>
+                                <tr>
+                                    <td colspan="3" class="p-2">
+                                        <button
+                                            class="w-full text-left p-3 border-2 border-dashed border-theme rounded-lg hover:bg-theme-card-bg-alt transition-colors flex items-center gap-2 text-theme-accent"
+                                            onclick="addOpexRow()">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                            Add New OpEx Item
+                                        </button>
+                                    </td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -464,7 +656,7 @@
 
             <!-- Right Column for Results -->
             <div class="lg:col-span-1 space-y-8">
-                 <div class="sticky top-8 card p-6 rounded-xl shadow-md">
+                <div class="sticky top-8 card p-6 rounded-xl shadow-md">
                     <h2 class="text-xl font-bold mb-4 pb-2 border-b-2 section-title">Results & Summary</h2>
                     <div class="space-y-4">
                         <div>
@@ -477,56 +669,63 @@
                         </div>
                         <div id="result-standard" class="result-box space-y-3 pt-3 border-t border-theme">
                             <p class="font-semibold text-lg">Standard Rate Pricing:</p>
-                             <div class="grid grid-cols-2 gap-x-4">
+                            <div class="grid grid-cols-2 gap-x-4">
                                 <div>
                                     <p class="text-sm uppercase tracking-wider">Price per vCPU/Hour</p>
                                     <p id="priceCpu" class="text-xl font-bold text-theme-accent">$0.00000</p>
                                 </div>
                                 <div>
                                     <p class="text-xs uppercase tracking-wider">Break-Even</p>
-                                    <p id="breakEvenPriceCpu" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                    <p id="breakEvenPriceCpu"
+                                        class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
                                 </div>
                                 <div>
                                     <p class="text-sm uppercase tracking-wider">Price per GB RAM/Hour</p>
                                     <p id="priceRam" class="text-xl font-bold text-theme-accent">$0.00000</p>
                                 </div>
                                 <div>
-                                     <p class="text-xs uppercase tracking-wider">Break-Even</p>
-                                    <p id="breakEvenPriceRam" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                    <p class="text-xs uppercase tracking-wider">Break-Even</p>
+                                    <p id="breakEvenPriceRam"
+                                        class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
                                 </div>
                                 <div>
                                     <p class="text-sm uppercase tracking-wider">Price per GB Storage/Hour</p>
                                     <p id="priceStorage" class="text-xl font-bold text-theme-accent">$0.00000</p>
                                 </div>
                                 <div>
-                                     <p class="text-xs uppercase tracking-wider">Break-Even</p>
-                                    <p id="breakEvenPriceStorage" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                    <p class="text-xs uppercase tracking-wider">Break-Even</p>
+                                    <p id="breakEvenPriceStorage"
+                                        class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
                                 </div>
-                             </div>
+                            </div>
                         </div>
-                        <div id="result-vci" class="result-box space-y-3 pt-3 border-t border-theme" style="display: none;">
+                        <div id="result-vci" class="result-box space-y-3 pt-3 border-t border-theme"
+                            style="display: none;">
                             <p class="font-semibold text-lg">Equal Share Model Pricing:</p>
-                             <div class="grid grid-cols-2 gap-x-4">
+                            <div class="grid grid-cols-2 gap-x-4">
                                 <div>
                                     <p class="text-sm uppercase tracking-wider">Annual Cost per Project</p>
                                     <p id="vciCost" class="text-xl font-bold text-theme-accent">$0.00</p>
                                 </div>
                                 <div>
                                     <p class="text-xs uppercase tracking-wider">Break-Even (Cost)</p>
-                                    <p id="breakEvenVciCost" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00</p>
+                                    <p id="breakEvenVciCost"
+                                        class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00</p>
                                 </div>
                             </div>
                         </div>
-                        <div id="result-hybrid" class="result-box space-y-3 pt-3 border-t border-theme" style="display: none;">
+                        <div id="result-hybrid" class="result-box space-y-3 pt-3 border-t border-theme"
+                            style="display: none;">
                             <p class="font-semibold text-lg">Hybrid Model Pricing:</p>
-                             <div class="grid grid-cols-2 gap-x-4">
+                            <div class="grid grid-cols-2 gap-x-4">
                                 <div>
                                     <p class="text-sm uppercase tracking-wider">Base Annual Cost / Tenant</p>
                                     <p id="hybridBaseCost" class="text-xl font-bold text-theme-accent">$0.00</p>
                                 </div>
-                                 <div>
+                                <div>
                                     <p class="text-xs uppercase tracking-wider">Break-Even (Cost)</p>
-                                    <p id="breakEvenHybridBaseCost" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00</p>
+                                    <p id="breakEvenHybridBaseCost"
+                                        class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00</p>
                                 </div>
                                 <div>
                                     <p class="text-sm uppercase tracking-wider">Overage vCPU Rate /Hour</p>
@@ -534,48 +733,61 @@
                                 </div>
                                 <div>
                                     <p class="text-xs uppercase tracking-wider">Break-Even</p>
-                                    <p id="breakEvenHybridCpuOverage" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                    <p id="breakEvenHybridCpuOverage"
+                                        class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
                                 </div>
-                                 <div>
+                                <div>
                                     <p class="text-sm uppercase tracking-wider">Overage GB RAM Rate /Hour</p>
                                     <p id="hybridRamOverage" class="text-xl font-bold text-theme-accent">$0.00000</p>
                                 </div>
                                 <div>
                                     <p class="text-xs uppercase tracking-wider">Break-Even</p>
-                                    <p id="breakEvenHybridRamOverage" class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
+                                    <p id="breakEvenHybridRamOverage"
+                                        class="text-md font-semibold text-gray-500 dark:text-gray-400">$0.00000</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- EXPORT BUTTON with TOOLTIP -->
                         <div class="pt-4 flex items-center justify-center gap-2">
-                             <button id="exportButton" onclick="exportToExcelWithFormulas()" class="w-full bg-theme-accent text-white font-bold py-3 px-4 rounded-lg bg-theme-accent-hover transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-accent-hover" disabled>
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                Export to Excel
-                             </button>
-                             <div class="tooltip-container">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            <button id="exportButton" onclick="exportToExcelWithFormulas()"
+                                class="w-full bg-theme-accent text-white font-bold py-3 px-4 rounded-lg bg-theme-accent-hover transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-accent-hover"
+                                disabled>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
                                 </svg>
-                                <span id="export-tooltip" class="tooltip-text">Calculate a model to enable export. The exported file will contain formulas for dynamic calculations.</span>
-                             </div>
+                                Export to Excel
+                            </button>
+                            <div class="tooltip-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <span id="export-tooltip" class="tooltip-text">Calculate a model to enable export. The
+                                    exported file will contain formulas for dynamic calculations.</span>
+                            </div>
                         </div>
 
                     </div>
-                 </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         let currentCurrency = 'USD';
-        
+
         // --- THEME & CURRENCY SWITCHER LOGIC ---
         document.getElementById('theme-selector').addEventListener('change', (e) => {
             document.documentElement.className = e.target.value;
             calculateModel();
         });
-        
+
         document.getElementById('currency-selector').addEventListener('change', (e) => {
             currentCurrency = e.target.value;
             const symbols = { USD: '$', EUR: '€', INR: '₹', GBP: '£' };
@@ -626,25 +838,25 @@
         // --- MODEL SWITCHER ---
         function switchModel() {
             const selectedModel = document.querySelector('input[name="financialModel"]:checked').value;
-            
+
             document.querySelectorAll('.model-input').forEach(el => el.style.display = 'none');
             document.querySelectorAll(`.model-input.${selectedModel}`).forEach(el => el.style.display = 'table-row');
-            
+
             document.querySelectorAll('.model-info').forEach(el => el.style.display = 'none');
             document.getElementById(`info-${selectedModel}`).style.display = 'block';
 
             document.querySelectorAll('.result-box').forEach(el => el.style.display = 'none');
             if (selectedModel === 'standard') {
-                 document.getElementById('result-standard').style.display = 'block';
+                document.getElementById('result-standard').style.display = 'block';
             } else if (selectedModel === 'vci') {
-                 document.getElementById('result-vci').style.display = 'block';
+                document.getElementById('result-vci').style.display = 'block';
             } else if (selectedModel === 'hybrid') {
-                 document.getElementById('result-hybrid').style.display = 'block';
+                document.getElementById('result-hybrid').style.display = 'block';
             }
 
             calculateModel();
         }
-        
+
         // --- INFO BOX TOGGLE ---
         function toggleInfoBox(id) {
             const box = document.getElementById(id);
@@ -663,9 +875,9 @@
         function getVal(id) {
             return parseFloat(document.getElementById(id).value) || 0;
         }
-        
+
         function formatCurrency(value, decimals = 2) {
-             return new Intl.NumberFormat('en-US', {
+            return new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: currentCurrency,
                 minimumFractionDigits: decimals,
@@ -739,7 +951,7 @@
 
             // --- Model-Specific Calculations ---
             const selectedModel = document.querySelector('input[name="financialModel"]:checked').value;
-            
+
             if (selectedModel === 'standard') {
                 const breakEvenPriceCpu = (utilizationRate > 0 && totalVcpu > 0) ? (totalHourlyCostRaw * cpuWeight) / (totalVcpu * utilizationRate) : 0;
                 const priceCpu = breakEvenPriceCpu * (1 + profitMargin);
@@ -757,55 +969,55 @@
                 document.getElementById('breakEvenPriceStorage').innerText = formatCurrency(breakEvenPriceStorage, 5);
 
             } else if (selectedModel === 'vci') {
-                 const breakEvenVciCost = numProjects > 0 ? totalAnnualCostRaw / numProjects : 0;
-                 const vciCost = breakEvenVciCost * (1 + profitMargin);
-                 document.getElementById('vciCost').innerText = formatCurrency(vciCost);
-                 document.getElementById('breakEvenVciCost').innerText = formatCurrency(breakEvenVciCost);
+                const breakEvenVciCost = numProjects > 0 ? totalAnnualCostRaw / numProjects : 0;
+                const vciCost = breakEvenVciCost * (1 + profitMargin);
+                document.getElementById('vciCost').innerText = formatCurrency(vciCost);
+                document.getElementById('breakEvenVciCost').innerText = formatCurrency(breakEvenVciCost);
 
             } else if (selectedModel === 'hybrid') {
-                 const baseAnnualCostTotalRaw = totalAnnualCostRaw * baseCostSplit;
-                 const overageAnnualCostTotalRaw = totalAnnualCostRaw * (1 - baseCostSplit);
-                 
-                 const breakEvenBaseCostPerTenant = numProjects > 0 ? baseAnnualCostTotalRaw / numProjects : 0;
-                 const hybridBaseCost = breakEvenBaseCostPerTenant * (1+profitMargin);
-                 document.getElementById('hybridBaseCost').innerText = formatCurrency(hybridBaseCost);
-                 document.getElementById('breakEvenHybridBaseCost').innerText = formatCurrency(breakEvenBaseCostPerTenant);
+                const baseAnnualCostTotalRaw = totalAnnualCostRaw * baseCostSplit;
+                const overageAnnualCostTotalRaw = totalAnnualCostRaw * (1 - baseCostSplit);
 
-                 const overageHourlyCostRaw = overageAnnualCostTotalRaw / (365*24);
+                const breakEvenBaseCostPerTenant = numProjects > 0 ? baseAnnualCostTotalRaw / numProjects : 0;
+                const hybridBaseCost = breakEvenBaseCostPerTenant * (1 + profitMargin);
+                document.getElementById('hybridBaseCost').innerText = formatCurrency(hybridBaseCost);
+                document.getElementById('breakEvenHybridBaseCost').innerText = formatCurrency(breakEvenBaseCostPerTenant);
 
-                 const breakEvenOveragePriceCpu = (overageUtilization > 0 && totalVcpu > 0) ? (overageHourlyCostRaw * cpuWeight) / (totalVcpu * overageUtilization) : 0;
-                 const overagePriceCpu = breakEvenOveragePriceCpu * (1 + profitMargin);
-                 document.getElementById('hybridCpuOverage').innerText = formatCurrency(overagePriceCpu, 5);
-                 document.getElementById('breakEvenHybridCpuOverage').innerText = formatCurrency(breakEvenOveragePriceCpu, 5);
+                const overageHourlyCostRaw = overageAnnualCostTotalRaw / (365 * 24);
+
+                const breakEvenOveragePriceCpu = (overageUtilization > 0 && totalVcpu > 0) ? (overageHourlyCostRaw * cpuWeight) / (totalVcpu * overageUtilization) : 0;
+                const overagePriceCpu = breakEvenOveragePriceCpu * (1 + profitMargin);
+                document.getElementById('hybridCpuOverage').innerText = formatCurrency(overagePriceCpu, 5);
+                document.getElementById('breakEvenHybridCpuOverage').innerText = formatCurrency(breakEvenOveragePriceCpu, 5);
 
 
-                 const breakEvenOveragePriceRam = (overageUtilization > 0 && totalRam > 0) ? (overageHourlyCostRaw * ramWeight) / (totalRam * overageUtilization) : 0;
-                 const overagePriceRam = breakEvenOveragePriceRam * (1+profitMargin);
-                 document.getElementById('hybridRamOverage').innerText = formatCurrency(overagePriceRam, 5);
-                 document.getElementById('breakEvenHybridRamOverage').innerText = formatCurrency(breakEvenOveragePriceRam, 5);
+                const breakEvenOveragePriceRam = (overageUtilization > 0 && totalRam > 0) ? (overageHourlyCostRaw * ramWeight) / (totalRam * overageUtilization) : 0;
+                const overagePriceRam = breakEvenOveragePriceRam * (1 + profitMargin);
+                document.getElementById('hybridRamOverage').innerText = formatCurrency(overagePriceRam, 5);
+                document.getElementById('breakEvenHybridRamOverage').innerText = formatCurrency(breakEvenOveragePriceRam, 5);
             }
             saveState(); // Save state on every calculation
         }
-        
+
         // --- RENDER FORMULAS WITH KATEX ---
         function renderFormulas() {
-             try {
+            try {
                 katex.render("C_{annual} = \\frac{\\sum C_{CapEx}}{A_y} + \\sum C_{OpEx}", document.getElementById('formula-std-1'));
                 katex.render("R_{unit} = \\frac{C_{hourly} \\times W_{unit}}{N_{unit} \\times U_{target}}", document.getElementById('formula-std-2'));
                 katex.render("P_{unit} = R_{unit} \\times (1 + M)", document.getElementById('formula-std-3'));
-                
+
                 katex.render("C_{project} = \\frac{C_{annual} \\times (1 + M)}{N_{projects}}", document.getElementById('formula-vci-1'));
-                
+
                 katex.render("C_{base} = \\frac{C_{annual} \\times B_{split}}{N_{projects}}", document.getElementById('formula-hybrid-1'));
                 katex.render("P_{overage} = \\frac{C_{hourly} \\times (1 - B_{split}) \\times W_{unit}}{N_{unit} \\times U_{overage}}", document.getElementById('formula-hybrid-2'));
-             } catch(e) { console.error("KaTeX rendering failed:", e); }
+            } catch (e) { console.error("KaTeX rendering failed:", e); }
         }
 
         // --- NEW EXPORT TO EXCEL FUNCTION WITH FORMULAS ---
         function exportToExcelWithFormulas() {
             const wb = XLSX.utils.book_new();
             const modelName = document.querySelector('input[name="financialModel"]:checked+label').textContent;
-            
+
             // --- Sheet 1: Inputs & Calculations ---
             const calcSheetData = [
                 ["FinOps Calculator Inputs & Logic"], [],
@@ -844,7 +1056,7 @@
                 ["", "Total Annual Cost (inc. Margin)", { f: 'C32*(1+(C9/100))' }],
                 ["", "Total Hourly Cost (inc. Margin)", { f: 'C33/(365*24)' }],
             ], { origin: "A27" });
-            
+
             ws_calc['!cols'] = [{ wch: 25 }, { wch: 30 }, { wch: 15 }];
             XLSX.utils.book_append_sheet(wb, ws_calc, "Inputs_And_Calculations");
 
@@ -875,7 +1087,7 @@
             const ws_opex = XLSX.utils.aoa_to_sheet(opexData);
             ws_opex['!cols'] = [{ wch: 30 }, { wch: 20 }];
             XLSX.utils.book_append_sheet(wb, ws_opex, "OpEx");
-            
+
             // --- Sheet 4: Summary ---
             const currencyFormat = (decimals) => `"${currentCurrency === 'EUR' ? '€' : currentCurrency === 'INR' ? '₹' : currentCurrency === 'GBP' ? '£' : '$'}" #,##0.${'0'.repeat(decimals)}`;
             const summaryData = [
@@ -885,27 +1097,27 @@
                 ["Total Annual Cost (inc. Margin)", { f: 'Inputs_And_Calculations!C33', t: 'n', z: currencyFormat(2) }],
                 ["Total Hourly Cost (inc. Margin)", { f: 'Inputs_And_Calculations!C34', t: 'n', z: currencyFormat(4) }],
             ];
-            
+
             const baseUtilFormula = `Inputs_And_Calculations!C10/100`;
 
             if (modelName.includes("Standard")) {
-                summaryData.push(["Price per vCPU/Hour", {f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C15/100))/(Inputs_And_Calculations!C24*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5)}]);
-                summaryData.push(["Price per GB RAM/Hour", {f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C16/100))/(Inputs_And_Calculations!C25*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5)}]);
-                summaryData.push(["Price per GB Storage/Hour", {f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C17/100))/(Inputs_And_Calculations!C26*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5)}]);
+                summaryData.push(["Price per vCPU/Hour", { f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C15/100))/(Inputs_And_Calculations!C24*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5) }]);
+                summaryData.push(["Price per GB RAM/Hour", { f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C16/100))/(Inputs_And_Calculations!C25*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5) }]);
+                summaryData.push(["Price per GB Storage/Hour", { f: `(Inputs_And_Calculations!C34*(Inputs_And_Calculations!C17/100))/(Inputs_And_Calculations!C26*(${baseUtilFormula}))`, t: 'n', z: currencyFormat(5) }]);
             } else if (modelName.includes("VCI")) {
-                summaryData.push(["Annual Cost per Project", {f: `Inputs_And_Calculations!C33/Inputs_And_Calculations!C11`, t: 'n', z: currencyFormat(2)}]);
+                summaryData.push(["Annual Cost per Project", { f: `Inputs_And_Calculations!C33/Inputs_And_Calculations!C11`, t: 'n', z: currencyFormat(2) }]);
             } else if (modelName.includes("Hybrid")) {
-                summaryData.push(["Base Annual Cost per Tenant", {f: `(Inputs_And_Calculations!C33 * (Inputs_And_Calculations!C12/100)) / Inputs_And_Calculations!C11`, t: 'n', z: currencyFormat(2)}]);
+                summaryData.push(["Base Annual Cost per Tenant", { f: `(Inputs_And_Calculations!C33 * (Inputs_And_Calculations!C12/100)) / Inputs_And_Calculations!C11`, t: 'n', z: currencyFormat(2) }]);
                 const overageHourly = `(Inputs_And_Calculations!C34 * (1-(Inputs_And_Calculations!C12/100)))`;
                 const overageUtil = `(Inputs_And_Calculations!C13/100)`;
-                summaryData.push(["Overage vCPU Rate /Hour", {f: `(${overageHourly} * (Inputs_And_Calculations!C15/100)) / (Inputs_And_Calculations!C24*${overageUtil})`, t: 'n', z: currencyFormat(5)}]);
-                summaryData.push(["Overage GB RAM Rate /Hour", {f: `(${overageHourly} * (Inputs_And_Calculations!C16/100)) / (Inputs_And_Calculations!C25*${overageUtil})`, t: 'n', z: currencyFormat(5)}]);
+                summaryData.push(["Overage vCPU Rate /Hour", { f: `(${overageHourly} * (Inputs_And_Calculations!C15/100)) / (Inputs_And_Calculations!C24*${overageUtil})`, t: 'n', z: currencyFormat(5) }]);
+                summaryData.push(["Overage GB RAM Rate /Hour", { f: `(${overageHourly} * (Inputs_And_Calculations!C16/100)) / (Inputs_And_Calculations!C25*${overageUtil})`, t: 'n', z: currencyFormat(5) }]);
             }
             const ws_summary = XLSX.utils.aoa_to_sheet(summaryData);
             ws_summary['!cols'] = [{ wch: 30 }, { wch: 20 }];
             XLSX.utils.book_append_sheet(wb, ws_summary, "Summary");
 
-            const fileName = `FinOps_Interactive_Report_${modelName.replace(/ /g, '_')}_${new Date().toISOString().slice(0,10)}.xlsx`;
+            const fileName = `FinOps_Interactive_Report_${modelName.replace(/ /g, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`;
             XLSX.writeFile(wb, fileName);
         }
 
@@ -962,9 +1174,9 @@
                     document.getElementById('opex-body').innerHTML = '';
                     state.opex?.forEach(row => addOpexRow(row.item, row.cost));
 
-                    document.getElementById('theme-selector').value = state.selectedTheme || 'light';
+                    document.getElementById('theme-selector').value = state.selectedTheme || 'portfolio';
                     document.getElementById('currency-selector').value = state.selectedCurrency || 'USD';
-                    
+
                     const modelRadio = document.querySelector(`input[name="financialModel"][value="${state.selectedModel}"]`);
                     if (modelRadio) modelRadio.checked = true;
                     else document.getElementById('modelStandard').checked = true;
@@ -973,7 +1185,7 @@
                     document.getElementById('theme-selector').dispatchEvent(new Event('change'));
                     document.getElementById('currency-selector').dispatchEvent(new Event('change'));
                     return true;
-                } catch(e) {
+                } catch (e) {
                     console.error("Failed to load state from localStorage:", e);
                     localStorage.removeItem('finopsCalculatorState');
                     return false;
@@ -983,7 +1195,7 @@
         }
 
         // --- INITIALIZATION ---
-        window.onload = function() {
+        window.onload = function () {
             const stateLoaded = loadState();
 
             if (!stateLoaded) {
@@ -996,18 +1208,18 @@
                 addOpexRow('Network Bandwidth', 600000);
                 addOpexRow('Staff Salaries (Engineers)', 1800000);
             }
-            
+
             switchModel();
             renderFormulas();
 
-            if(!stateLoaded) {
-                 document.getElementById('exportButton').disabled = true;
-                 document.getElementById('export-tooltip').innerText = "Make a change to enable export.";
+            if (!stateLoaded) {
+                document.getElementById('exportButton').disabled = true;
+                document.getElementById('export-tooltip').innerText = "Make a change to enable export.";
             }
         };
 
     </script>
 
 </body>
-</html>
 
+</html>
